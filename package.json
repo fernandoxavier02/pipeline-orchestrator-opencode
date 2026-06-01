@@ -1,0 +1,46 @@
+{
+  "name": "@fx-studio-ai/pipeline-orchestrator-opencode",
+  "version": "0.1.0",
+  "description": "Standalone OpenCode adaptation of the Pipeline Orchestrator multi-agent governance system. Fully independent from the canonical Claude Code plugin.",
+  "type": "commonjs",
+  "bin": {
+    "pipeline-orchestrator-opencode-install": "./scripts/install.cjs"
+  },
+  "files": [
+    "src/",
+    "scripts/",
+    ".opencode/",
+    "opencode.json",
+    "README.md",
+    "CHANGELOG.md",
+    "LICENSE"
+  ],
+  "scripts": {
+    "test": "node scripts/run-tests.cjs",
+    "install:dry-run": "node scripts/install.cjs",
+    "prepublishOnly": "npm test"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  },
+  "publishConfig": {
+    "access": "restricted"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/fernandoxavier02/Pipeline-Orchestrator-OpenCode.git"
+  },
+  "keywords": [
+    "opencode",
+    "pipeline-orchestrator",
+    "multi-agent",
+    "governance",
+    "tdd",
+    "adversarial-review"
+  ],
+  "license": "SEE LICENSE IN LICENSE",
+  "author": {
+    "name": "FX Studio AI",
+    "url": "https://github.com/fernandoxavier02"
+  }
+}

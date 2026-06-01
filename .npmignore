@@ -1,0 +1,12 @@
+# Dev-only — não vai para o pacote npm publicado
+tests/
+specs/
+plan.md
+tmp/
+**/tmp/
+.opencode/node_modules/
+.opencode/package-lock.json
+node_modules/
+package-lock.json
+.git/
+.gitignore
