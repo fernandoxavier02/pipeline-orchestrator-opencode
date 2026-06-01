@@ -1,7 +1,9 @@
 # Dev-only — não vai para o pacote npm publicado
 tests/
 specs/
-plan.md
+**/plan.md
+**/*.env
+**/.env
 tmp/
 **/tmp/
 .opencode/node_modules/
