@@ -408,4 +408,6 @@ module.exports = {
   applySentinelCheckpoint,
   validateFinalSentinel,
   readJsonl,
+  loadSentinel,
+  saveSentinel,
 };

@@ -1,6 +1,6 @@
 {
   "name": "@fx-studio-ai/pipeline-orchestrator-opencode",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "description": "Standalone OpenCode adaptation of the Pipeline Orchestrator multi-agent governance system. Fully independent from the canonical Claude Code plugin.",
   "type": "commonjs",
   "bin": {

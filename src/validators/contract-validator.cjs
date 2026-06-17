@@ -1,7 +1,7 @@
 "use strict";
 
 const VALID_HARDNESS = new Set(["MANDATORY", "HARD", "CIRCUIT_BREAKER", "SOFT", "AUDIT"]);
-const VALID_DECISIONS = new Set(["APPROVED", "REJECTED", "BLOCKED", "BYPASSED", "REWORK", "STOPPED"]);
+const VALID_DECISIONS = new Set(["BLOCKED", "DISPATCHED", "SKIPPED", "APPROVED", "CONFIRMED", "REJECTED", "TRIGGERED", "NOT_TRIGGERED"]);
 const VALID_CHECKPOINT_STATUS = new Set(["PASS", "CORRECTED", "BLOCK"]);
 const VALID_EVIDENCE_TYPES = new Set(["ACCEPTANCE", "RED", "GREEN", "PROMPT_DEBUG", "REVIEW", "VERDICT"]);
 const VALID_EVIDENCE_VERDICTS = new Set(["PASS", "FAIL", "BLOCKED", "PARTIAL"]);
@@ -137,7 +137,26 @@ function validateSentinelState(record, options = {}) {
       }
     }
   }
+  if (Object.prototype.hasOwnProperty.call(record, "planGate")) {
+    const pg = record.planGate;
+    if (!isObject(pg)) return fail("PLAN_GATE_INVALID", "planGate must be an object");
+    if (typeof pg.required !== "boolean") return fail("PLAN_GATE_INVALID", "planGate.required must be boolean");
+    if (typeof pg.approved !== "boolean") return fail("PLAN_GATE_INVALID", "planGate.approved must be boolean");
+    if (!(pg.decision === null || pg.decision === undefined || pg.decision === "APPROVED" || pg.decision === "REJECTED")) return fail("PLAN_GATE_INVALID", "planGate.decision must be null, APPROVED, or REJECTED");
+    if (!(pg.approvedAt === null || pg.approvedAt === undefined || typeof pg.approvedAt === "string")) return fail("PLAN_GATE_INVALID", "planGate.approvedAt must be string or null");
+    if (!(pg.executed === undefined || typeof pg.executed === "boolean")) return fail("PLAN_GATE_INVALID", "planGate.executed must be boolean");
+  }
   return ok();
+}
+
+// B1: is the Plan-Mode gate armed? required && !approved. Absent planGate / not-required → not armed
+// (backward compat with legacy states). Mirrors planGateArmedFromState in the Claude Code edit-guard.
+function isPlanGateArmed(state) {
+  if (!isObject(state)) return false;
+  const pg = state.planGate;
+  if (!isObject(pg)) return false;
+  if (pg.required !== true) return false;
+  return pg.approved !== true;
 }
 
 function validateConfidenceScore(record) {
@@ -294,4 +313,5 @@ module.exports = {
   validateConfidenceScoreCeilings,
   evaluateHandshakeTimeout,
   validateQuestionDecisionLink,
+  isPlanGateArmed,
 };
