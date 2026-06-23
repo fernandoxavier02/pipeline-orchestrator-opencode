@@ -163,7 +163,7 @@
 
 | # | Slice | Origem canônica | Alvo porta | Categoria | Aceitação |
 |---|---|---|---|---|---|
-| W6.1 | `src/opencode/human-gate-record.cjs` | `.claude/hooks/human-gate-record.cjs` (135) | hook `permission.replied` (observer) | A | append HUMAN_GATE/AUDIT/CONFIRMED em gate-decisions.jsonl; teste passa |
+| W6.1 | `src/opencode/human-gate-record.cjs` | `.claude/hooks/human-gate-record.cjs` (135) | hook `permission.replied` + `question.replied` + `event` (observer) | A | DONE 2026-06-23: append HUMAN_GATE/AUDIT/CONFIRMED em gate-decisions.jsonl; resposta real obrigatoria; redaction aplicada; teste passa; evidencia em `tmp/w6-1-human-gate-record-evidence.md` |
 | W6.2 | `src/opencode/langfuse-hook.cjs` (mod) | `.claude/hooks/langfuse-hook.cjs` (813) | hooks `tool.execute.before` + `tool.execute.after` para `agent` | A+B | span start/end com metadados do subagente; opt-in via LANGFUSE_ENABLED; teste passa |
 | W6.3 | `src/lib/langfuse-client.cjs` + `langfuse-carrier.cjs` + `langfuse-sanitizer.cjs` | `lib/langfuse-*.cjs` | porta direta D | D | exports confirmados; testes passam |
 

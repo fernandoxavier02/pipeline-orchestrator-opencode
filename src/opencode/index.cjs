@@ -19,6 +19,7 @@ module.exports = {
   ...require('./checkpoint-verdict-gate.cjs'),
   ...require('./phase-verdict-gate.cjs'),
   ...require('./gate-log-gate.cjs'),
+  ...require('./human-gate-record.cjs'),
   ...require('./plan-gate.cjs'),
   ...require('./detect-shell-write.cjs'),
   ...require('./compatibility-hooks.cjs'),
