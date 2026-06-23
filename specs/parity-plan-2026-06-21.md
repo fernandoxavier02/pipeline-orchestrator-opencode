@@ -147,7 +147,7 @@
 | # | Slice | Origem canônica | Alvo porta | Categoria | Aceitação |
 |---|---|---|---|---|---|
 | W5.1 | `src/opencode/scope-lock-hook.cjs` (mod) | `.claude/hooks/scope-lock-hook.cjs` (424) | hook `tool.execute.before` para edit/write | A | forbidden_files denylist + allowed_files allowlist + REFACTOR_SCOPE_LOCK gate; teste passa |
-| W5.2 | `src/opencode/spec-seal-guard.cjs` | `.claude/hooks/spec-seal-guard.cjs` (273) | hook `tool.execute.before` para bash | A | bloqueia `run-seal.cjs` se spec_review_done !== true; teste passa |
+| W5.2 | `src/opencode/spec-seal-guard.cjs` | `.claude/hooks/spec-seal-guard.cjs` (273) | hook `tool.execute.before` para bash | A | DONE 2026-06-23: bloqueia `run-seal.cjs` se spec_review_done !== true; checa multiplas invocacoes; teste passa; evidencia em `tmp/w5-2-spec-seal-guard-evidence.md` |
 | W5.3 | `src/opencode/parallel-dispatch-gate.cjs` | `.claude/hooks/parallel-dispatch-gate.cjs` (254) | hook `tool.execute.before` para `agent` | A | warn-first structural gate para parallel_dispatch_expected; deny só sob opt-in; teste passa |
 
 **Esforço:** médio (3 hooks A).

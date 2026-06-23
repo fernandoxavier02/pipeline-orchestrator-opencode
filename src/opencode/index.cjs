@@ -11,6 +11,7 @@ module.exports = {
   ...require('./dispatch-pending-gate.cjs'),
   ...require('./dispatch-record-hook.cjs'),
   ...require('./scope-lock-hook.cjs'),
+  ...require('./spec-seal-guard.cjs'),
   ...require('./step-ledger-gate.cjs'),
   ...require('./step-ledger-stamp.cjs'),
   ...require('./batch-review-gate.cjs'),
