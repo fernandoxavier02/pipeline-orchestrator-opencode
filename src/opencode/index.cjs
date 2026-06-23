@@ -9,6 +9,8 @@ module.exports = {
   ...require('./pipeline-arm-writer.cjs'),
   ...require('./pipeline-adaptation-plugin.cjs'),
   ...require('./dispatch-pending-gate.cjs'),
+  ...require('./dispatch-record-hook.cjs'),
+  ...require('./scope-lock-hook.cjs'),
   ...require('./step-ledger-gate.cjs'),
   ...require('./step-ledger-stamp.cjs'),
   ...require('./batch-review-gate.cjs'),

@@ -9,6 +9,8 @@ const { createCheckpointVerdictGateHooks } = require('./checkpoint-verdict-gate.
 const { createPhaseVerdictGateHooks } = require('./phase-verdict-gate.cjs');
 const { createGateLogGateHooks } = require('./gate-log-gate.cjs');
 const { createDispatchPendingGateHooks } = require('./dispatch-pending-gate.cjs');
+const { createDispatchRecordHooks } = require('./dispatch-record-hook.cjs');
+const { createScopeLockHooks } = require('./scope-lock-hook.cjs');
 
 function projectDirFromContext(ctx = {}) {
   if (typeof ctx.worktree === 'string' && ctx.worktree) return ctx.worktree;
@@ -24,11 +26,13 @@ function createPipelineAdaptationHooks(ctx = {}, options = {}) {
     createPipelineArmWriterHooks({ ...options, projectDir }),
     createPipelineArmGateHooks({ ...options, projectDir }),
     createDispatchPendingGateHooks({ ...options, projectDir }),
+    createScopeLockHooks({ ...options, projectDir }),
     createStepLedgerGateHooks({ ...options, projectDir }),
     createGateLogGateHooks({ ...options, projectDir }),
     createBatchReviewGateHooks({ ...options, projectDir }),
     createCheckpointVerdictGateHooks({ ...options, projectDir }),
     createPhaseVerdictGateHooks({ ...options, projectDir }),
+    createDispatchRecordHooks({ ...options, projectDir }),
     createStepLedgerStampHooks({ ...options, projectDir }),
   );
 }
