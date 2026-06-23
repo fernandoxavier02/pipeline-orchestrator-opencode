@@ -2,7 +2,7 @@
 
 ## Veredito documental
 
-Sprints 1 a 18 registradas como implementadas e verificadas. A prova final registrada foi `npm test` com `Summary: 54 passed / 0 failed / 54 total`.
+Sprints 1 a 18 registradas como implementadas e verificadas. A prova final registrada foi `npm test` com `Summary: 56 passed / 0 failed / 56 total`.
 
 ## Implementado e verificado
 
@@ -61,7 +61,7 @@ Esta atualizacao registra a execucao completa das Sprints 1 a 18 dentro da adapt
 
 ## Atualização de execução — Sprints 7 a 18
 
-Veredito: sprints 7 a 18 implementadas e verificadas nesta chamada. A prova final registrada foi `npm test` com `Summary: 54 passed / 0 failed / 54 total`.
+Veredito: sprints 7 a 18 implementadas e verificadas nesta chamada. A prova final registrada foi `npm test` com `Summary: 56 passed / 0 failed / 56 total`.
 
 - Sprint 7 - Bugfix light: implementada/verificada. Evidência: `tmp/sprint-7-mode-quality-evidence.md`.
 - Sprint 8 - Bugfix heavy: implementada/verificada. Evidência: `tmp/sprint-8-mode-quality-evidence.md`.
@@ -82,7 +82,7 @@ Limites preservados: nenhum commit realizado; plugin canônico, configurações 
 
 ## Atualização de hardening — Sprints 9 a 18
 
-Veredito: PASS. Os workflows 9 a 18 foram endurecidos para rejeitar evidência booleana/superficial e exigir artefatos físicos existentes. A prova final registrada foi `npm test` com `Summary: 54 passed / 0 failed / 54 total`.
+Veredito: PASS. Os workflows 9 a 18 foram endurecidos para rejeitar evidência booleana/superficial e exigir artefatos físicos existentes. A prova final registrada foi `npm test` com `Summary: 56 passed / 0 failed / 56 total`.
 
 Evidência agregada: `tmp/sprints-9-18-harness-hardening-evidence.md`.
 

@@ -43,7 +43,7 @@ para evitar colisão).
 ## Verificação
 
 ```bash
-npm test      # roda a suíte local (54 testes)
+npm test      # roda a suíte local (56 testes)
 ```
 
 ## Estrutura
@@ -51,7 +51,7 @@ npm test      # roda a suíte local (54 testes)
 ```
 .
 ├─ src/          runtime, validators, state, verification (51 módulos)
-├─ tests/        suíte de contrato + unitária (54 testes)
+├─ tests/        suíte de contrato + unitária (56 testes)
 ├─ specs/        spec canonical-parity-bugfix
 ├─ scripts/      run-tests.cjs, install.cjs
 ├─ .opencode/    produto instalável (agents, commands, skills, plugins)

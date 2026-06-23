@@ -24,4 +24,8 @@ for (const skill of result.skills) {
   assert.match(skill.body, /reject missing evidence/i);
 }
 
+const orchestratorSkill = result.skills.find((skill) => skill.name === 'pipeline-orchestrator');
+assert.match(orchestratorSkill.body, /subset/i);
+assert.match(orchestratorSkill.body, /not full canonical parity/i);
+
 console.log('opencode skills OK');

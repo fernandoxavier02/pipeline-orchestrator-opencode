@@ -71,7 +71,7 @@ Ao fim de cada grupo, rodar comparação de eventos esperados contra eventos pro
 
 - Validar que cada linha de gate-decisions.jsonl contém gate, hardness, phase, decision, decided_by, timestamp, detail e confidence_impact.
 - Rejeitar hardness fora da taxonomia canônica: MANDATORY, HARD, CIRCUIT_BREAKER, SOFT, AUDIT.
-- Rejeitar decision fora de APPROVED, REJECTED, BLOCKED, BYPASSED, REWORK ou STOPPED.
+- Rejeitar decision fora de BLOCKED, DISPATCHED, SKIPPED, APPROVED, CONFIRMED, REJECTED, TRIGGERED ou NOT_TRIGGERED.
 - Validar sentinel-state parcial por fase e sentinel-state final com todos os checkpoints aplicáveis.
 - Para cada gate canônico em parity-matrix.md, executar teste de presença do evento esperado e falha quando o gate obrigatório estiver ausente.
 

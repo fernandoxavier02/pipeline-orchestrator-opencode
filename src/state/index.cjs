@@ -5,6 +5,7 @@ const runStore = require('./run-store.cjs');
 const evidenceWriter = require('./evidence-writer.cjs');
 const integrityChecker = require('./integrity-checker.cjs');
 const resumeSnapshot = require('./resume-snapshot.cjs');
+const sentinelStateInspector = require('./sentinel-state-inspector.cjs');
 
 const STATE_LAYER = 'state';
 
@@ -15,4 +16,5 @@ module.exports = {
   ...evidenceWriter,
   ...integrityChecker,
   ...resumeSnapshot,
+  ...sentinelStateInspector,
 };

@@ -1,5 +1,6 @@
 tmp/*
 !tmp/.gitkeep
+_archive-opencode-adaptation-workspace-2026-05-31/
 .opencode/node_modules/
 .opencode/package-lock.json
 node_modules/

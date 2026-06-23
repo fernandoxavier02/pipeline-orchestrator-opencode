@@ -129,6 +129,34 @@ assert.equal(validateGateDecisionRecord({
   detail: "state init failed",
   confidence_impact: -100,
 }).ok, true);
+for (const decision of ["BLOCKED", "DISPATCHED", "SKIPPED", "APPROVED", "CONFIRMED", "REJECTED", "TRIGGERED", "NOT_TRIGGERED"]) {
+  assert.equal(validateGateDecisionRecord({
+    schemaVersion: "GATE_DECISION_RECORD/v1",
+    runId: "run-001",
+    gate: "CANONICAL_DECISION",
+    hardness: "AUDIT",
+    phase: "contract-check",
+    decision,
+    decided_by: "system",
+    timestamp: "2026-05-24T00:01:00.000Z",
+    detail: "canonical decision vocabulary",
+    confidence_impact: 0,
+  }).ok, true, `${decision} is canonical`);
+}
+for (const decision of ["BYPASSED", "REWORK", "STOPPED", "RESOLVED", "PASS", "COMPLETE", "GO"]) {
+  assert.equal(validateGateDecisionRecord({
+    schemaVersion: "GATE_DECISION_RECORD/v1",
+    runId: "run-001",
+    gate: "NON_CANONICAL_DECISION",
+    hardness: "AUDIT",
+    phase: "contract-check",
+    decision,
+    decided_by: "system",
+    timestamp: "2026-05-24T00:01:00.000Z",
+    detail: "non-canonical decision vocabulary",
+    confidence_impact: 0,
+  }).ok, false, `${decision} is not canonical`);
+}
 assert.equal(validateGateDecisionRecord({
   schemaVersion: "GATE_DECISION_RECORD/v1",
   runId: "run-001",

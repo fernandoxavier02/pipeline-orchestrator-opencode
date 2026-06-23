@@ -16,6 +16,14 @@ function assertStrongEvidence(run) { const evidence = evidenceFor(run.stateRoot,
 
 function risk(run, front) { return { front, sourceArtifact: ev(run,`risk-${front}`,`risk ${front}`,'Risk source.'), summary:`${front} risk covered.` }; }
 function validInput(run) { return { scopeApproved: ev(run,'scope','APPROVED scope','Scope approved.'), readOnlyProof: ev(run,'read-only','no writes','Read-only proof.'), riskMatrix: [risk(run,'security'), risk(run,'architecture'), risk(run,'quality')], sources: [ev(run,'source-1','source one','Source one.'), ev(run,'source-2','source two','Source two.')], adversarialReport: ev(run,'adversarial','PASS adversarial','Adversarial report passed.') }; }
+const auditHeavyCommand = fs.readFileSync(path.resolve(__dirname, '..', '..', '.opencode', 'commands', 'audit-heavy.md'), 'utf8');
+const auditHeavyTemplate = JSON.parse(fs.readFileSync(path.resolve(__dirname, '..', '..', 'opencode.json'), 'utf8')).command['audit-heavy'].template;
+for (const auditHeavySource of [auditHeavyCommand, auditHeavyTemplate]) {
+  for (const step of ['Step 1', 'Step 2', 'Step 3', 'Step 4', 'Step 5', 'Step 6', 'Step 7', 'Step 8', 'Step 9']) assert.match(auditHeavySource, new RegExp(step));
+  assert.match(auditHeavySource, /scope approval/i);
+  assert.match(auditHeavySource, /GO\/CONDITIONAL\/NO-GO/i);
+  assert.match(auditHeavySource, /read-only/i);
+}
 { const run = runCase('sprint12-risk-weak'); const input = validInput(run); input.riskMatrix = [{ front:'security' }, { front:'architecture' }, { front:'quality' }]; const blocked = runModeQualitySprint({ stateRoot: run.stateRoot, runId: run.runId, sprint: '12', mode: 'audit-heavy', input }); assert.equal(blocked.ok, false); assert.equal(blocked.blockedGate, 'AUDIT_RISK_MATRIX'); }
 { const run = runCase('sprint12-source-missing'); const input = validInput(run); input.sources[0] = path.join(run.stateRoot, 'missing-source.log'); const blocked = runModeQualitySprint({ stateRoot: run.stateRoot, runId: run.runId, sprint: '12', mode: 'audit-heavy', input }); assert.equal(blocked.ok, false); assert.equal(blocked.blockedGate, 'FINDINGS_EVIDENCE'); }
 { const run = runCase('sprint12'); const result = runModeQualitySprint({ stateRoot: run.stateRoot, runId: run.runId, sprint: '12', mode: 'audit-heavy', input: validInput(run) }); assert.equal(result.ok, true); assert.equal(result.gates.includes('AUDIT_RISK_MATRIX'), true); assertStrongEvidence(run); }

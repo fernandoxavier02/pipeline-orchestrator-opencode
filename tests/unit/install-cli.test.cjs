@@ -12,6 +12,8 @@ const packageRoot = path.resolve(__dirname, '..', '..');
 // --- parseArgs ---
 assert.equal(cli.parseArgs(['--apply']).apply, true);
 assert.equal(cli.parseArgs([]).apply, false);
+assert.equal(cli.parseArgs(['--global']).global, true);
+assert.equal(cli.parseArgs(['--migrate-provider-secrets']).migrateProviderSecrets, true);
 assert.equal(cli.parseArgs(['--target', '/foo/bar']).target, path.resolve('/foo/bar'));
 assert.equal(cli.parseArgs(['--target=/baz']).target, path.resolve('/baz'));
 assert.throws(() => cli.parseArgs(['--target']), /requires a directory/);
@@ -22,6 +24,10 @@ assert.throws(() => cli.parseArgs(['--target=']), /requires a directory/);
 assert.throws(() => cli.assertSafeTarget(os.homedir()), /protected/);
 assert.throws(() => cli.assertSafeTarget(os.tmpdir()), /protected/);
 assert.throws(() => cli.assertSafeTarget(path.parse(process.cwd()).root), /protected/);
+assert.throws(
+  () => cli.assertSafeTarget(path.resolve(path.dirname(packageRoot), 'Pipeline-Orchestrator')),
+  /canonical/,
+);
 const safeDir = fs.mkdtempSync(path.join(os.tmpdir(), 'oc-cli-safe-'));
 assert.equal(cli.assertSafeTarget(safeDir), path.resolve(safeDir));
 
@@ -90,6 +96,31 @@ assert.ok(!presentPaths.includes('.opencode/tools'));
   );
   assert.equal(res.status, 1, 'refuses protected target');
   assert.ok(/protected directory/.test(res.stderr), res.stderr);
+}
+
+// --- end-to-end: --global installs the global OpenCode layout and manifest ---
+{
+  const tgt = fs.mkdtempSync(path.join(os.tmpdir(), 'oc-global-apply-'));
+  const dryRun = spawnSync(
+    process.execPath,
+    [path.join(packageRoot, 'scripts', 'install.cjs'), '--global', '--target', tgt],
+    { encoding: 'utf8' },
+  );
+  assert.equal(dryRun.status, 0, dryRun.stderr);
+  assert.match(dryRun.stdout, /layout\s+: GLOBAL/);
+  assert.match(dryRun.stdout, /commands\/pipeline\.md/);
+
+  const applied = spawnSync(
+    process.execPath,
+    [path.join(packageRoot, 'scripts', 'install.cjs'), '--global', '--target', tgt, '--apply'],
+    { encoding: 'utf8' },
+  );
+  assert.equal(applied.status, 0, applied.stderr);
+  assert.ok(fs.existsSync(path.join(tgt, 'commands', 'pipeline.md')), 'global command installed');
+  assert.ok(fs.existsSync(path.join(tgt, 'plugins', 'pipeline-guard-runtime.cjs')), 'global runtime installed');
+  assert.ok(fs.existsSync(path.join(tgt, 'pipeline-orchestrator-install.manifest.json')), 'manifest installed');
+  assert.equal(fs.existsSync(path.join(tgt, '.opencode', 'commands', 'pipeline.md')), false, 'no project layout in global install');
+  assert.match(applied.stdout, /Global install applied/);
 }
 
 console.log('install cli OK');

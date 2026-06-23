@@ -33,7 +33,7 @@ Campos canônicos obrigatórios: gate, hardness, phase, decision, decided_by, ti
 Valores válidos:
 
 - hardness: MANDATORY, HARD, CIRCUIT_BREAKER, SOFT, AUDIT.
-- decision: APPROVED, REJECTED, BLOCKED, BYPASSED, REWORK, STOPPED.
+- decision: BLOCKED, DISPATCHED, SKIPPED, APPROVED, CONFIRMED, REJECTED, TRIGGERED, NOT_TRIGGERED.
 - timestamp: data/hora em formato ISO 8601.
 - confidence_impact: número entre -100 e 100.
 
@@ -42,7 +42,7 @@ Extensões OpenCode permitidas: schemaVersion, runId, questionId, protocolEventI
 Exemplo válido:
 
 ```json
-{"schemaVersion":"GATE_DECISION_RECORD/v1","runId":"run-001","gate":"PLAN_REJECTED","hardness":"HARD","phase":"phase-1.5","decision":"REWORK","decided_by":"user","timestamp":"2026-05-24T00:01:00Z","detail":"Usuário pediu ajuste no plano antes de liberar cenários.","confidence_impact":-10,"questionId":"q-plan-001","protocolEventId":"evt-010","selectedOptionId":"adjust"}
+{"schemaVersion":"GATE_DECISION_RECORD/v1","runId":"run-001","gate":"PLAN_REJECTED","hardness":"HARD","phase":"phase-1.5","decision":"REJECTED","decided_by":"user","timestamp":"2026-05-24T00:01:00Z","detail":"Usuário pediu ajuste no plano antes de liberar cenários.","confidence_impact":-10,"questionId":"q-plan-001","protocolEventId":"evt-010","selectedOptionId":"adjust"}
 ```
 
 Exemplo inválido:
@@ -51,7 +51,7 @@ Exemplo inválido:
 {"gate":"PLAN_REJECTED","decision":"maybe","phase":"phase-1.5"}
 ```
 
-Regra de bloqueio: o final-validator falha se faltar qualquer campo canônico obrigatório, se hardness não for exatamente um dos níveis canônicos MANDATORY/HARD/CIRCUIT_BREAKER/SOFT/AUDIT, se decision não for APPROVED/REJECTED/BLOCKED/BYPASSED/REWORK/STOPPED, se timestamp não for ISO 8601, ou se confidence_impact não for número entre -100 e 100. CONDITIONAL pode existir como veredito ou resultado em outro contrato, mas nunca como hardness.
+Regra de bloqueio: o final-validator falha se faltar qualquer campo canônico obrigatório, se hardness não for exatamente um dos níveis canônicos MANDATORY/HARD/CIRCUIT_BREAKER/SOFT/AUDIT, se decision não for BLOCKED/DISPATCHED/SKIPPED/APPROVED/CONFIRMED/REJECTED/TRIGGERED/NOT_TRIGGERED, se timestamp não for ISO 8601, ou se confidence_impact não for número entre -100 e 100. CONDITIONAL pode existir como veredito ou resultado em outro contrato, mas nunca como hardness.
 
 Teste de contrato obrigatório: validar uma linha JSONL válida com campos canônicos; rejeitar linha sem detail; rejeitar hardness inválido, incluindo CONDITIONAL; rejeitar decision inválido; rejeitar confidence_impact fora do intervalo; confirmar que campos extras OpenCode não tornam válido um registro sem campos canônicos.
 ## PROTOCOL_EVENT_RECORD v1

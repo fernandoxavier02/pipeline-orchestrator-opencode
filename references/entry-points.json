@@ -1,0 +1,34 @@
+{
+  "$schema_note": "v7.13.0 (R6): machine-readable SSOT for the pipeline entry-point registry. OpenCode port keeps the same supported subset registry for local plugin entry-point matching.",
+  "version": "7.13.0",
+  "entry_points": [
+    "pipeline",
+    "bugfix",
+    "bugfix-light",
+    "bugfix-heavy",
+    "feature",
+    "feature-light",
+    "feature-heavy",
+    "refactor",
+    "refactor-light",
+    "refactor-heavy",
+    "user-story",
+    "user-story-light",
+    "user-story-heavy",
+    "audit",
+    "audit-light",
+    "audit-heavy",
+    "ux-sim",
+    "ux-sim-light",
+    "ux-sim-heavy",
+    "spec",
+    "spec-light",
+    "spec-heavy",
+    "spec-audit-only",
+    "review"
+  ],
+  "legacy_aliases": {
+    "userstory": "user-story",
+    "ux": "ux-sim"
+  }
+}

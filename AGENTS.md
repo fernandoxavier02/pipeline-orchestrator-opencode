@@ -5,8 +5,9 @@ Contexto para agentes (Claude Code, OpenCode, Codex) que trabalharem neste repos
 ## Identidade
 
 Projeto **independente** que porta o Pipeline Orchestrator para o OpenCode. Vive em
-`D:\Pipeline Orchestrator Claude\Pipeline-Orchestrator-OpenCode\`, como **pasta irmã** do
-repositório canônico do Claude Code (`Pipeline-Orchestrator/`). Os dois NÃO compartilham
+`D:\pipeline-orchestrator-claude\Pipeline-Orchestrator-OpenCode\`, sob o mesmo workspace
+guarda-chuva do repositório canônico do Claude Code
+(`D:\pipeline-orchestrator-claude\claude-code\Pipeline-Orchestrator\`). Os dois NÃO compartilham
 arquivos nem pacote npm.
 
 ## Iron Law
@@ -14,7 +15,7 @@ arquivos nem pacote npm.
 - **Nunca** modificar o repositório canônico do Claude Code a partir daqui.
 - Paridade de comportamento é validada por testes de contrato em `specs/canonical-parity-bugfix/`,
   não por cópia de código do canônico.
-- TDD: a suíte (`npm test`, 54 testes) deve permanecer verde antes de declarar qualquer trabalho pronto.
+- TDD: a suíte (`npm test`, 56 testes) deve permanecer verde antes de declarar qualquer trabalho pronto.
 
 ## Layout
 
@@ -38,4 +39,4 @@ node scripts/install.cjs --target <projeto> --apply   # instalar artefatos
 ## Publicação (manual, fora do fluxo automático)
 
 - npm: `npm publish` (escopo restrito) — exige autenticação própria.
-- git: repositório remoto próprio (`Pipeline-Orchestrator-OpenCode` no GitHub), independente do canônico.
+- git: repositório remoto próprio (`pipeline-orchestrator-opencode` no GitHub), independente do canônico.

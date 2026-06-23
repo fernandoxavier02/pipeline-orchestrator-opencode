@@ -25,8 +25,12 @@ function isObject(value) {
   return value !== null && typeof value === "object" && !Array.isArray(value);
 }
 
+function hasOwn(record, field) {
+  return Object.prototype.hasOwnProperty.call(record, field);
+}
+
 function hasString(record, field) {
-  return typeof record[field] === "string" && record[field].length > 0;
+  return hasOwn(record, field) && typeof record[field] === "string" && record[field].length > 0;
 }
 
 function isIsoDate(value) {
@@ -98,9 +102,9 @@ function validateProtocolEventRecord(record) {
 
 function validateCheckpoint(name, checkpoint) {
   if (!isObject(checkpoint)) return fail("CHECKPOINT_INVALID", `${name} must be an object`);
-  if (!VALID_CHECKPOINT_STATUS.has(checkpoint.status)) return fail("CHECKPOINT_STATUS_INVALID", `${name} status invalid`);
+  if (!hasOwn(checkpoint, "status") || !VALID_CHECKPOINT_STATUS.has(checkpoint.status)) return fail("CHECKPOINT_STATUS_INVALID", `${name} status invalid`);
   if (!hasString(checkpoint, "eventId")) return fail("CHECKPOINT_EVENT_INVALID", `${name} eventId is required`);
-  if (!isIsoDate(checkpoint.checkedAt)) return fail("CHECKPOINT_TIME_INVALID", `${name} checkedAt must be ISO 8601`);
+  if (!hasOwn(checkpoint, "checkedAt") || !isIsoDate(checkpoint.checkedAt)) return fail("CHECKPOINT_TIME_INVALID", `${name} checkedAt must be ISO 8601`);
   return ok();
 }
 
@@ -123,15 +127,21 @@ function validateSentinelState(record, options = {}) {
 
   if (options.phase === "before_execution") {
     for (const checkpointName of ["phase_0_to_1", "phase_1_to_2"]) {
-      if (!record.checkpoints[checkpointName]) return fail("CHECKPOINT_MISSING", `${checkpointName} is required before execution`);
+      if (!hasOwn(record.checkpoints, checkpointName)) return fail("CHECKPOINT_MISSING", `${checkpointName} is required before execution`);
+      const checkpointResult = validateCheckpoint(checkpointName, record.checkpoints[checkpointName]);
+      if (!checkpointResult.ok) return checkpointResult;
     }
   }
   if (options.phase === "before_closeout") {
-    if (!record.checkpoints.phase_2_to_3) return fail("CHECKPOINT_MISSING", "phase_2_to_3 is required before closeout");
+    if (!hasOwn(record.checkpoints, "phase_2_to_3")) return fail("CHECKPOINT_MISSING", "phase_2_to_3 is required before closeout");
+    const checkpointResult = validateCheckpoint("phase_2_to_3", record.checkpoints.phase_2_to_3);
+    if (!checkpointResult.ok) return checkpointResult;
   }
   if (options.phase === "final" || record.currentPhase === "closed") {
     for (const checkpointName of FINAL_CHECKPOINTS) {
-      if (!record.checkpoints[checkpointName]) return fail("FINAL_CHECKPOINT_MISSING", `${checkpointName} is required for final state`);
+      if (!hasOwn(record.checkpoints, checkpointName)) return fail("FINAL_CHECKPOINT_MISSING", `${checkpointName} is required for final state`);
+      const checkpointResult = validateCheckpoint(checkpointName, record.checkpoints[checkpointName]);
+      if (!checkpointResult.ok) return checkpointResult;
       if (!["PASS", "CORRECTED"].includes(record.checkpoints[checkpointName].status)) {
         return fail("FINAL_CHECKPOINT_STATUS_INVALID", `${checkpointName} must pass or be corrected`);
       }
@@ -140,11 +150,11 @@ function validateSentinelState(record, options = {}) {
   if (Object.prototype.hasOwnProperty.call(record, "planGate")) {
     const pg = record.planGate;
     if (!isObject(pg)) return fail("PLAN_GATE_INVALID", "planGate must be an object");
-    if (typeof pg.required !== "boolean") return fail("PLAN_GATE_INVALID", "planGate.required must be boolean");
-    if (typeof pg.approved !== "boolean") return fail("PLAN_GATE_INVALID", "planGate.approved must be boolean");
-    if (!(pg.decision === null || pg.decision === undefined || pg.decision === "APPROVED" || pg.decision === "REJECTED")) return fail("PLAN_GATE_INVALID", "planGate.decision must be null, APPROVED, or REJECTED");
-    if (!(pg.approvedAt === null || pg.approvedAt === undefined || typeof pg.approvedAt === "string")) return fail("PLAN_GATE_INVALID", "planGate.approvedAt must be string or null");
-    if (!(pg.executed === undefined || typeof pg.executed === "boolean")) return fail("PLAN_GATE_INVALID", "planGate.executed must be boolean");
+    if (!hasOwn(pg, "required") || typeof pg.required !== "boolean") return fail("PLAN_GATE_INVALID", "planGate.required must be boolean");
+    if (!hasOwn(pg, "approved") || typeof pg.approved !== "boolean") return fail("PLAN_GATE_INVALID", "planGate.approved must be boolean");
+    if (hasOwn(pg, "decision") && !(pg.decision === null || pg.decision === "APPROVED" || pg.decision === "REJECTED")) return fail("PLAN_GATE_INVALID", "planGate.decision must be null, APPROVED, or REJECTED");
+    if (hasOwn(pg, "approvedAt") && !(pg.approvedAt === null || typeof pg.approvedAt === "string")) return fail("PLAN_GATE_INVALID", "planGate.approvedAt must be string or null");
+    if (hasOwn(pg, "executed") && typeof pg.executed !== "boolean") return fail("PLAN_GATE_INVALID", "planGate.executed must be boolean");
   }
   return ok();
 }
@@ -153,10 +163,11 @@ function validateSentinelState(record, options = {}) {
 // (backward compat with legacy states). Mirrors planGateArmedFromState in the Claude Code edit-guard.
 function isPlanGateArmed(state) {
   if (!isObject(state)) return false;
+  if (!hasOwn(state, "planGate")) return false;
   const pg = state.planGate;
   if (!isObject(pg)) return false;
-  if (pg.required !== true) return false;
-  return pg.approved !== true;
+  if (!hasOwn(pg, "required") || pg.required !== true) return false;
+  return !(hasOwn(pg, "approved") && pg.approved === true);
 }
 
 function validateConfidenceScore(record) {
