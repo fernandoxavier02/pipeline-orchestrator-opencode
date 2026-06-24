@@ -15,6 +15,7 @@ const {
   rawAgentNameFromInput,
 } = require('./step-ledger-gate.cjs');
 const { sanitizeSpanPayload } = require('../lib/langfuse-sanitizer.cjs');
+const { validateExternalSend } = require('../validators/consent-validator.cjs');
 
 const BEFORE_HOOK_MARKER = Symbol.for('pipeline-orchestrator.langfuse.tool.execute.before.processed');
 const AFTER_HOOK_MARKER = Symbol.for('pipeline-orchestrator.langfuse.tool.execute.after.processed');
@@ -54,6 +55,23 @@ function agentNameFromArgs(args, input) {
 function isEnabled(env = process.env) {
   const flag = String(env.LANGFUSE_ENABLED || '').trim().toLowerCase();
   return flag === 'true' || flag === '1';
+}
+
+function consentDecision(env = process.env) {
+  return String(env.LANGFUSE_CONSENT_DECISION || env.PIPELINE_EXTERNAL_SEND_CONSENT || '').trim().toLowerCase();
+}
+
+function consentGateEventId(env = process.env) {
+  return String(env.LANGFUSE_GATE_EVENT_ID || env.PIPELINE_EXTERNAL_SEND_GATE_ID || '').trim();
+}
+
+function externalSendAllowed(env = process.env, redactedPayload = '') {
+  return validateExternalSend({
+    observabilityEnabled: isEnabled(env),
+    consentDecision: consentDecision(env),
+    gateEventId: consentGateEventId(env),
+    sanitizedPayload: { ok: true, redacted: redactedPayload },
+  });
 }
 
 function sampleRate(env = process.env) {
@@ -239,6 +257,8 @@ function traceNameFor(state) {
 
 function openSpan(client, carrier, promptText) {
   const input = redactSpanText(promptText || '');
+  const consent = externalSendAllowed(carrier.env || process.env, input);
+  if (!consent.ok) return false;
   if (client && typeof client.trace === 'function') {
     const trace = client.trace({ id: carrier.traceId, name: carrier.traceName, metadata: carrier.metadata });
     if (trace && typeof trace.span === 'function') {
@@ -278,6 +298,8 @@ function closeSpan(client, carrier, toolResponse, nowIso) {
   const endedAt = nowIso || new Date().toISOString();
   const computed = duration(carrier.startedAt, endedAt);
   const output = redactSpanText(toolResponse == null ? '' : toolResponse);
+  const consent = externalSendAllowed(carrier.env || process.env, output);
+  if (!consent.ok) return false;
   if (client && typeof client.span === 'function') {
     const span = client.span({ traceId: carrier.traceId, id: carrier.spanId, startTime: carrier.startedAt });
     if (span && typeof span.end === 'function') {
@@ -337,9 +359,22 @@ function handleToolExecuteBefore(input, output = {}, options = {}) {
     nonce: crypto.randomBytes(16).toString('hex'),
     startedAt: nowIso,
     metadata: buildMetadata(state, agentName),
+    env: {
+      LANGFUSE_ENABLED: isEnabled(options.env || process.env) ? 'true' : '',
+      LANGFUSE_CONSENT_DECISION: consentDecision(options.env || process.env),
+      LANGFUSE_GATE_EVENT_ID: consentGateEventId(options.env || process.env),
+    },
   };
+  const promptText = args.prompt || '';
+  const consent = externalSendAllowed(options.env || process.env, redactSpanText(promptText));
+  if (!consent.ok) {
+    if (typeof options.audit === 'function') {
+      try { options.audit({ type: 'langfuse.skipped', reason: consent.code }); } catch (_) { /* telemetry audit never blocks */ }
+    }
+    return output;
+  }
   if (!writeSpanCarrier(spanCarrierPath(runId, toolUseId, options), carrier)) return output;
-  try { openSpan(client, carrier, args.prompt || ''); } catch (_) { /* telemetry never blocks tool execution */ }
+  try { openSpan(client, carrier, promptText); } catch (_) { /* telemetry never blocks tool execution */ }
   if (typeof options.audit === 'function') {
     try { options.audit({ type: 'langfuse.open', runId: safeRunId, agentName, recorded: true }); } catch (_) { /* telemetry audit never blocks */ }
   }
@@ -391,6 +426,9 @@ module.exports = {
   argsFromInput,
   agentNameFromArgs,
   isEnabled,
+  consentDecision,
+  consentGateEventId,
+  externalSendAllowed,
   sampleRate,
   shouldSample,
   redactSpanText,

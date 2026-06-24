@@ -2,6 +2,7 @@
 
 const { createPipelineArmGateHooks } = require('./pipeline-arm-gate.cjs');
 const { createPipelineArmWriterHooks } = require('./pipeline-arm-writer.cjs');
+const { createForcePipelineAgentsHooks } = require('./force-pipeline-agents.cjs');
 const { createDispatchGuardHooks } = require('./dispatch-guard.cjs');
 const { createEditGuardHooks } = require('./edit-guard-hook.cjs');
 const { createStepLedgerGateHooks } = require('./step-ledger-gate.cjs');
@@ -34,6 +35,7 @@ function createPipelineAdaptationHooks(ctx = {}, options = {}) {
   const projectDir = options.projectDir || projectDirFromContext(ctx);
   return mergeHooks(
     createPipelineArmWriterHooks({ ...options, projectDir }),
+    createForcePipelineAgentsHooks({ ...options, projectDir }),
     createPipelineArmGateHooks({ ...options, projectDir }),
     createDispatchPendingGateHooks({ ...options, projectDir }),
     createParallelDispatchGateHooks({ ...options, projectDir }),

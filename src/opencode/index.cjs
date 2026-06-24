@@ -7,6 +7,7 @@ module.exports = {
   ...require('./plugin-guard.cjs'),
   ...require('./pipeline-arm-gate.cjs'),
   ...require('./pipeline-arm-writer.cjs'),
+  ...require('./force-pipeline-agents.cjs'),
   ...require('./pipeline-adaptation-plugin.cjs'),
   ...require('./dispatch-pending-gate.cjs'),
   ...require('./parallel-dispatch-gate.cjs'),

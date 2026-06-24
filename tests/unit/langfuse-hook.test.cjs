@@ -96,6 +96,8 @@ const originalSample = process.env.LANGFUSE_SAMPLE_RATE;
 const originalPublicKey = process.env.LANGFUSE_PUBLIC_KEY;
 const originalSecretKey = process.env.LANGFUSE_SECRET_KEY;
 const originalOpenAiKey = process.env.OPENAI_API_KEY;
+const originalConsent = process.env.LANGFUSE_CONSENT_DECISION;
+const originalGateEvent = process.env.LANGFUSE_GATE_EVENT_ID;
 
 try {
   delete process.env.LANGFUSE_ENABLED;
@@ -112,6 +114,18 @@ try {
   const governed = projectWithState(sentinel());
   process.env.LANGFUSE_ENABLED = 'true';
   process.env.LANGFUSE_SAMPLE_RATE = '1';
+
+  const noConsentClient = fakeClient();
+  langfuse.handleToolExecuteBefore(agentInput(governed.project, { tool_use_id: 'dispatch-no-consent' }), {}, {
+    client: noConsentClient,
+    carrierRoot: fs.mkdtempSync(path.join(os.tmpdir(), 'po-w6-2-no-consent-')),
+    nowIso: '2026-06-23T12:59:00.000Z',
+    random: () => 0,
+  });
+  assert.equal(noConsentClient.calls.length, 0);
+
+  process.env.LANGFUSE_CONSENT_DECISION = 'approved';
+  process.env.LANGFUSE_GATE_EVENT_ID = 'gate-langfuse-test';
 
   const carrierRoot = fs.mkdtempSync(path.join(os.tmpdir(), 'po-w6-2-carrier-'));
   const client = fakeClient();
@@ -310,7 +324,7 @@ try {
     const hooksFromFile = await pluginModule.default({ directory: governed.project }, {
       client: fileClient,
       carrierRoot,
-      env: { LANGFUSE_ENABLED: 'true', LANGFUSE_SAMPLE_RATE: '1' },
+      env: { LANGFUSE_ENABLED: 'true', LANGFUSE_SAMPLE_RATE: '1', LANGFUSE_CONSENT_DECISION: 'approved', LANGFUSE_GATE_EVENT_ID: 'gate-langfuse-file' },
       nowIso: '2026-06-23T13:04:00.000Z',
     });
     hooksFromFile['tool.execute.before'](reviewAgentInput(governed.project, 'dispatch-file'), {});
@@ -336,4 +350,8 @@ try {
   else process.env.LANGFUSE_SECRET_KEY = originalSecretKey;
   if (originalOpenAiKey === undefined) delete process.env.OPENAI_API_KEY;
   else process.env.OPENAI_API_KEY = originalOpenAiKey;
+  if (originalConsent === undefined) delete process.env.LANGFUSE_CONSENT_DECISION;
+  else process.env.LANGFUSE_CONSENT_DECISION = originalConsent;
+  if (originalGateEvent === undefined) delete process.env.LANGFUSE_GATE_EVENT_ID;
+  else process.env.LANGFUSE_GATE_EVENT_ID = originalGateEvent;
 }
