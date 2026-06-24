@@ -199,7 +199,7 @@
 
 | # | Slice | Origem canônica | Alvo porta | Categoria | Aceitação |
 |---|---|---|---|---|---|
-| W8.1 | `src/opencode/dispatch-guard.cjs` (mod) | `.claude/hooks/dispatch-guard.cjs` (1160) | hook `tool.execute.before` para skill/agent | A+B | Plan-Mode/Brainstorm bypass detection + STEP 1.7 routing; teste passa |
+| W8.1 DONE | `src/opencode/dispatch-guard.cjs` (mod) | `.claude/hooks/dispatch-guard.cjs` (1160) | hook `tool.execute.before` para skill/agent | A+B | Plan-Mode/Brainstorm bypass detection + STEP 1.7 routing; teste passa; evidência em `tmp/w8-1-dispatch-guard-evidence.md` |
 | W8.2 | `src/opencode/edit-guard-hook.cjs` (mod wrapper) | `.claude/hooks/edit-guard-hook.cjs` (769) | hook `tool.execute.before` para edit/write/bash | A | write-lock + exec-window + dispatch-pending lock + Plan-Mode gate + shell-write; usa SSOT de W0.1; teste passa |
 | W8.3 | `src/opencode/force-pipeline-agents.cjs` (mod) | `.claude/hooks/force-pipeline-agents.cjs` (334) | hook `tui.prompt.append` | B | lembrete de forçar agents pipeline; teste passa |
 | W8.4 | `src/opencode/session-lock-hook.cjs` (mod) | `.claude/hooks/session-lock-hook.cjs` (191) | hook `tui.prompt.append` ou `session.created` | B | cria session lock em pipeline entry-points; teste passa |

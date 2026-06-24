@@ -26,7 +26,7 @@ function makeSourceRoot() {
   write(path.join(root, '.opencode', 'plugins', 'pipeline-adaptation-plugin.js'), 'export default async function plugin() { return {}; }\n');
   write(path.join(root, '.opencode', 'plugins', 'pipeline-guard.js'), 'broken project-local import ../../src/opencode/plugin-guard.cjs');
   write(path.join(root, 'src', 'opencode', 'plugin-guard.cjs'), "'use strict';\nmodule.exports = { createPipelineGuardHooks() { return {}; } };\n");
-  write(path.join(root, 'src', 'opencode', 'pipeline-adaptation-plugin.cjs'), "'use strict';\nmodule.exports = { createPipelineAdaptationHooks() { return { 'experimental.session.compacting': () => {} }; } };\n");
+  write(path.join(root, 'src', 'opencode', 'pipeline-adaptation-plugin.cjs'), "'use strict';\nmodule.exports = { createPipelineAdaptationHooks() { return { 'experimental.session.compacting': () => {}, 'tool.execute.before': () => {} }; } };\n");
   write(path.join(root, 'opencode.json'), JSON.stringify({
     $schema: 'https://opencode.ai/config.json',
     command: {
@@ -129,6 +129,13 @@ assert.equal(
     .then,
   'function',
 );
+const wrapperSmoke = spawnSync(process.execPath, ['-e', `
+  (async () => {
+    const hooks = await require(${JSON.stringify(path.join(targetRoot, 'plugins', 'pipeline-adaptation-plugin.js'))})({}, {});
+    if (typeof hooks['tool.execute.before'] !== 'function') process.exit(2);
+  })().catch(() => process.exit(1));
+`], { encoding: 'utf8', stdio: 'pipe' });
+assert.equal(wrapperSmoke.status, 0, wrapperSmoke.stderr || wrapperSmoke.stdout);
 
 const config = JSON.parse(fs.readFileSync(path.join(targetRoot, 'opencode.json'), 'utf8'));
 assert.equal(config.command.keep.template, 'keep existing command');

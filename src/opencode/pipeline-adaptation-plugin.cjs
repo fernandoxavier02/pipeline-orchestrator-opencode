@@ -2,6 +2,7 @@
 
 const { createPipelineArmGateHooks } = require('./pipeline-arm-gate.cjs');
 const { createPipelineArmWriterHooks } = require('./pipeline-arm-writer.cjs');
+const { createDispatchGuardHooks } = require('./dispatch-guard.cjs');
 const { createStepLedgerGateHooks } = require('./step-ledger-gate.cjs');
 const { createStepLedgerStampHooks } = require('./step-ledger-stamp.cjs');
 const { createBatchReviewGateHooks } = require('./batch-review-gate.cjs');
@@ -42,6 +43,7 @@ function createPipelineAdaptationHooks(ctx = {}, options = {}) {
     createBatchReviewGateHooks({ ...options, projectDir }),
     createCheckpointVerdictGateHooks({ ...options, projectDir }),
     createPhaseVerdictGateHooks({ ...options, projectDir }),
+    createDispatchGuardHooks({ ...options, projectDir }),
     createDispatchRecordHooks({ ...options, projectDir }),
     createStepLedgerStampHooks({ ...options, projectDir }),
     createHumanGateRecordHooks({ ...options, projectDir }),
