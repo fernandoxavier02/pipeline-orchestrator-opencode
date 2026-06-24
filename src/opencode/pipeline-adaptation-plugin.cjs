@@ -5,6 +5,7 @@ const { createPipelineArmWriterHooks } = require('./pipeline-arm-writer.cjs');
 const { createForcePipelineAgentsHooks } = require('./force-pipeline-agents.cjs');
 const { createDispatchGuardHooks } = require('./dispatch-guard.cjs');
 const { createEditGuardHooks } = require('./edit-guard-hook.cjs');
+const { createSentinelHooks } = require('./sentinel-hook.cjs');
 const { createStepLedgerGateHooks } = require('./step-ledger-gate.cjs');
 const { createStepLedgerStampHooks } = require('./step-ledger-stamp.cjs');
 const { createBatchReviewGateHooks } = require('./batch-review-gate.cjs');
@@ -53,6 +54,7 @@ function createPipelineAdaptationHooks(ctx = {}, options = {}) {
     createStepLedgerStampHooks({ ...options, projectDir }),
     createHumanGateRecordHooks({ ...options, projectDir }),
     createLangfuseHooks({ ...options, projectDir }),
+    createSentinelHooks({ ...options, projectDir }),
     createSessionLockHooks({ ...options, projectDir }),
     createStopGatePatternHooks({ ...options, projectDir }),
     createStopHookHooks({ ...options, projectDir }),

@@ -22,6 +22,7 @@ module.exports = {
   ...require('./gate-log-gate.cjs'),
   ...require('./dispatch-guard.cjs'),
   ...require('./edit-guard-hook.cjs'),
+  ...require('./sentinel-hook.cjs'),
   ...require('./human-gate-record.cjs'),
   ...require('./langfuse-hook.cjs'),
   ...require('./session-lock-hook.cjs'),

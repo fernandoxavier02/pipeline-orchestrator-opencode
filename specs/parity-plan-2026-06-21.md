@@ -203,7 +203,7 @@
 | W8.2 DONE | `src/opencode/edit-guard-hook.cjs` (mod wrapper) | `.claude/hooks/edit-guard-hook.cjs` (769) | hook `tool.execute.before` para edit/write/bash | A | write-lock + exec-window + dispatch-pending lock + Plan-Mode gate + shell-write; usa SSOT de W0.1; teste passa; evidência em `tmp/w8-2-edit-guard-evidence.md` |
 | W8.3 DONE | `src/opencode/force-pipeline-agents.cjs` (mod) | `.claude/hooks/force-pipeline-agents.cjs` (334) | hook `tui.prompt.append` | B | lembrete de forçar agents pipeline; teste passa; evidência em `tmp/w8-3-force-pipeline-agents-evidence.md` |
 | W8.4 DONE | `src/opencode/session-lock-hook.cjs` (mod) | `.claude/hooks/session-lock-hook.cjs` (191) | hook `tui.prompt.append` ou `session.created` | B | cria session lock em pipeline entry-points; teste passa; evidência em `tmp/w8-4-session-lock-evidence.md` |
-| W8.5 | `src/opencode/sentinel-hook.cjs` (mod) | `.claude/hooks/sentinel-hook.cjs` (541) | hook `tool.execute.before` para `agent` | A | checkpoint enforcement; expected_next array (parallel fan-out); teste passa |
+| W8.5 DONE | `src/opencode/sentinel-hook.cjs` (mod) | `.claude/hooks/sentinel-hook.cjs` (541) | hook `tool.execute.before` para `agent` | A | checkpoint enforcement; expected_next array (parallel fan-out); teste passa; evidência em `tmp/w8-5-sentinel-hook-evidence.md` |
 | W8.6 | `src/opencode/skill-frontmatter-parser.cjs` (mod) | `.claude/hooks/skill-frontmatter-parser.cjs` (235) | hook `tool.execute.before` para `skill` | A | frontmatter contract enforcement; parser é D; teste passa |
 
 **Esforço:** alto (6 hooks, 3 A + 3 B, sendo W8.1 e W8.2 grandes).
