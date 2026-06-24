@@ -17,6 +17,7 @@ const { createHumanGateRecordHooks } = require('./human-gate-record.cjs');
 const { createLangfuseHooks } = require('./langfuse-hook.cjs');
 const { createStopGatePatternHooks } = require('./stop-gate-pattern.cjs');
 const { createStopHookHooks } = require('./stop-hook.cjs');
+const { createSessionCleanupHooks } = require('./session-cleanup-hook.cjs');
 
 function projectDirFromContext(ctx = {}) {
   if (typeof ctx.worktree === 'string' && ctx.worktree) return ctx.worktree;
@@ -46,6 +47,7 @@ function createPipelineAdaptationHooks(ctx = {}, options = {}) {
     createLangfuseHooks({ ...options, projectDir }),
     createStopGatePatternHooks({ ...options, projectDir }),
     createStopHookHooks({ ...options, projectDir }),
+    createSessionCleanupHooks({ ...options, projectDir }),
   );
 }
 

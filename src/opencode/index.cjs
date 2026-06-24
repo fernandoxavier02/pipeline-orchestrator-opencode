@@ -23,6 +23,7 @@ module.exports = {
   ...require('./langfuse-hook.cjs'),
   ...require('./stop-gate-pattern.cjs'),
   ...require('./stop-hook.cjs'),
+  ...require('./session-cleanup-hook.cjs'),
   ...require('./plan-gate.cjs'),
   ...require('./detect-shell-write.cjs'),
   ...require('./compatibility-hooks.cjs'),
