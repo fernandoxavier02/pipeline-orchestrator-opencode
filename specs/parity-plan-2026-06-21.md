@@ -204,7 +204,7 @@
 | W8.3 DONE | `src/opencode/force-pipeline-agents.cjs` (mod) | `.claude/hooks/force-pipeline-agents.cjs` (334) | hook `tui.prompt.append` | B | lembrete de forçar agents pipeline; teste passa; evidência em `tmp/w8-3-force-pipeline-agents-evidence.md` |
 | W8.4 DONE | `src/opencode/session-lock-hook.cjs` (mod) | `.claude/hooks/session-lock-hook.cjs` (191) | hook `tui.prompt.append` ou `session.created` | B | cria session lock em pipeline entry-points; teste passa; evidência em `tmp/w8-4-session-lock-evidence.md` |
 | W8.5 DONE | `src/opencode/sentinel-hook.cjs` (mod) | `.claude/hooks/sentinel-hook.cjs` (541) | hook `tool.execute.before` para `agent` | A | checkpoint enforcement; expected_next array (parallel fan-out); teste passa; evidência em `tmp/w8-5-sentinel-hook-evidence.md` |
-| W8.6 | `src/opencode/skill-frontmatter-parser.cjs` (mod) | `.claude/hooks/skill-frontmatter-parser.cjs` (235) | hook `tool.execute.before` para `skill` | A | frontmatter contract enforcement; parser é D; teste passa |
+| W8.6 DONE | `src/opencode/skill-frontmatter-parser.cjs` (mod) | `.claude/hooks/skill-frontmatter-parser.cjs` (235) | hook `tool.execute.before` para `skill` | A | frontmatter contract enforcement; parser é D; teste passa; evidência em `tmp/w8-6-skill-frontmatter-parser-evidence.md` |
 
 **Esforço:** alto (6 hooks, 3 A + 3 B, sendo W8.1 e W8.2 grandes).
 **Risco:** médio. W8.1 (dispatch-guard 1160 linhas) é o maior hook do canônico — precisa leitura completa antes de portar.
