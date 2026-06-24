@@ -74,10 +74,11 @@ function collectFiles(root, relativeRoot) {
 
 function makeGlobalPluginArtifacts(sourceRoot) {
   const runtimePath = path.join(sourceRoot, 'src', 'opencode', 'plugin-guard.cjs');
+  const adaptationRuntimePath = path.join(sourceRoot, 'src', 'opencode', 'pipeline-adaptation-plugin.cjs');
   return [
     {
       relativePath: 'plugins/pipeline-adaptation-plugin.js',
-      content: "'use strict';\n\nmodule.exports = async function pipelineAdaptationPlugin() {\n  return {};\n};\n",
+      content: `'use strict';\n\nconst { createPipelineAdaptationHooks } = require(${JSON.stringify(adaptationRuntimePath)});\n\nmodule.exports = async function pipelineAdaptationPlugin(input = {}, options = {}) {\n  return createPipelineAdaptationHooks(input, options);\n};\n`,
     },
     {
       relativePath: 'plugins/pipeline-guard.js',
