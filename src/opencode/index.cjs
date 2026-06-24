@@ -20,6 +20,7 @@ module.exports = {
   ...require('./phase-verdict-gate.cjs'),
   ...require('./gate-log-gate.cjs'),
   ...require('./dispatch-guard.cjs'),
+  ...require('./edit-guard-hook.cjs'),
   ...require('./human-gate-record.cjs'),
   ...require('./langfuse-hook.cjs'),
   ...require('./stop-gate-pattern.cjs'),
