@@ -144,6 +144,7 @@ assert.equal(config.provider.qwen.options.apiKey, '${QWEN_API_KEY}');
 assert.deepEqual(envWrites, [['QWEN_API_KEY', 'SECRET_QWEN']]);
 assert.ok(config.plugin.includes('./plugins/pipeline-guard.js'));
 assert.ok(config.plugin.includes('./plugins/pipeline-adaptation-plugin.js'));
+assert.deepEqual(config.plugin.slice(-2), ['./plugins/pipeline-adaptation-plugin.js', './plugins/pipeline-guard.js']);
 assert.doesNotMatch(
   fs.readFileSync(path.join(result.backupPath, 'opencode.json'), 'utf8'),
   /SECRET_QWEN/,
@@ -171,6 +172,21 @@ const envRefResult = installGlobalArtifacts({
 });
 assert.equal(envRefResult.ok, true);
 assert.deepEqual(envRefWrites, []);
+
+const orderTarget = fs.mkdtempSync(path.join(os.tmpdir(), 'po-global-order-'));
+write(path.join(orderTarget, 'opencode.json'), JSON.stringify({
+  plugin: ['./plugins/pipeline-guard.js', './plugins/other.js'],
+}, null, 2));
+const orderResult = installGlobalArtifacts({
+  sourceRoot,
+  targetRoot: orderTarget,
+  packageVersion: '0.1.0-test',
+  canonicalVersion: '8.0.2-test',
+  setUserEnv: () => {},
+});
+assert.equal(orderResult.ok, true);
+const orderConfig = JSON.parse(fs.readFileSync(path.join(orderTarget, 'opencode.json'), 'utf8'));
+assert.deepEqual(orderConfig.plugin, ['./plugins/other.js', './plugins/pipeline-adaptation-plugin.js', './plugins/pipeline-guard.js']);
 
 write(path.join(targetRoot, 'commands', 'pipeline.md'), 'corrupted command');
 const badVerify = verifyInstalledManifest({ targetRoot, manifestPath: result.manifestPath });

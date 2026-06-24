@@ -201,9 +201,10 @@ function mergeGlobalConfig({ existingConfig, sourceConfig, setUserEnv }) {
       ...(sourceConfig.command || {}),
     },
   };
-  const plugin = Array.isArray(existingConfig.plugin) ? [...existingConfig.plugin] : [];
+  const existingPlugin = Array.isArray(existingConfig.plugin) ? existingConfig.plugin : [];
+  const plugin = existingPlugin.filter((entry) => !GLOBAL_PLUGIN_ENTRIES.includes(entry));
   for (const entry of GLOBAL_PLUGIN_ENTRIES) {
-    if (!plugin.includes(entry)) plugin.push(entry);
+    plugin.push(entry);
   }
   merged.plugin = plugin;
   const migratedSecrets = migrateProviderSecrets(merged, setUserEnv);

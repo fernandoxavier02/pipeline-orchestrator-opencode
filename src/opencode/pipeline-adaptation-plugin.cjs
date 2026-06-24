@@ -20,6 +20,7 @@ const { createHumanGateRecordHooks } = require('./human-gate-record.cjs');
 const { createLangfuseHooks } = require('./langfuse-hook.cjs');
 const { createStopGatePatternHooks } = require('./stop-gate-pattern.cjs');
 const { createStopHookHooks } = require('./stop-hook.cjs');
+const { createSessionLockHooks } = require('./session-lock-hook.cjs');
 const { createSessionCleanupHooks } = require('./session-cleanup-hook.cjs');
 const { createCompactionBridgeHooks } = require('./compaction-bridge.cjs');
 
@@ -52,6 +53,7 @@ function createPipelineAdaptationHooks(ctx = {}, options = {}) {
     createStepLedgerStampHooks({ ...options, projectDir }),
     createHumanGateRecordHooks({ ...options, projectDir }),
     createLangfuseHooks({ ...options, projectDir }),
+    createSessionLockHooks({ ...options, projectDir }),
     createStopGatePatternHooks({ ...options, projectDir }),
     createStopHookHooks({ ...options, projectDir }),
     createSessionCleanupHooks({ ...options, projectDir }),
