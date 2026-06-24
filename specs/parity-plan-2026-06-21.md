@@ -180,7 +180,7 @@
 
 | # | Slice | Origem canônica | Alvo porta | Categoria | Aceitação |
 |---|---|---|---|---|---|
-| W7.1 | `src/opencode/stop-gate-pattern.cjs` | `.claude/hooks/stop-gate-hook.cjs` (244) | pattern alternativo C | C | (1) regra prompt-native forte em SKILL.md; (2) hook `session.idle` observer que registra `PIPELINE_STOP_ATTEMPT` em protocol-events.jsonl; (3) write do terminal `hard_failed` após 3 continuities; teste passa |
+| W7.1 DONE | `src/opencode/stop-gate-pattern.cjs` | `.claude/hooks/stop-gate-hook.cjs` (244) | pattern alternativo C | C | (1) regra prompt-native forte em SKILL.md local/global; (2) hook `session.idle`/`event` observer registra `PIPELINE_STOP_ATTEMPT` em protocol-events.jsonl; (3) write do terminal `hard_failed` após 3 continuities; (4) plugin OpenCode local/global carrega hooks; `node tests/unit/stop-gate-pattern.test.cjs`, `npm test`, e import global passam. Limite: observer-only, não block determinístico. |
 | W7.2 | `src/opencode/stop-hook.cjs` (mod) | `.claude/hooks/stop-hook.cjs` (842) | hook `session.idle` observer | B | append run-log.jsonl + fidelity report; teste passa |
 | W7.3 | `src/opencode/session-cleanup-hook.cjs` (mod) | `.claude/hooks/session-cleanup-hook.cjs` (116) | hook `session.idle` observer | B | unlink de locks expirados; teste passa |
 | W7.4 | `src/opencode/compaction-bridge.cjs` | (novo — não existe no canônico) | hook `experimental.session.compacting` | Bônus | injeta estado do run (runId, fase atual, gates pendentes) no prompt de compactação; teste passa |

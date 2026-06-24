@@ -21,6 +21,7 @@ module.exports = {
   ...require('./gate-log-gate.cjs'),
   ...require('./human-gate-record.cjs'),
   ...require('./langfuse-hook.cjs'),
+  ...require('./stop-gate-pattern.cjs'),
   ...require('./plan-gate.cjs'),
   ...require('./detect-shell-write.cjs'),
   ...require('./compatibility-hooks.cjs'),

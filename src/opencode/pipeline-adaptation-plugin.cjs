@@ -15,6 +15,7 @@ const { createSpecSealGuardHooks } = require('./spec-seal-guard.cjs');
 const { createParallelDispatchGateHooks } = require('./parallel-dispatch-gate.cjs');
 const { createHumanGateRecordHooks } = require('./human-gate-record.cjs');
 const { createLangfuseHooks } = require('./langfuse-hook.cjs');
+const { createStopGatePatternHooks } = require('./stop-gate-pattern.cjs');
 
 function projectDirFromContext(ctx = {}) {
   if (typeof ctx.worktree === 'string' && ctx.worktree) return ctx.worktree;
@@ -42,6 +43,7 @@ function createPipelineAdaptationHooks(ctx = {}, options = {}) {
     createStepLedgerStampHooks({ ...options, projectDir }),
     createHumanGateRecordHooks({ ...options, projectDir }),
     createLangfuseHooks({ ...options, projectDir }),
+    createStopGatePatternHooks({ ...options, projectDir }),
   );
 }
 
