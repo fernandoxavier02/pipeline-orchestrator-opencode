@@ -14,6 +14,7 @@ const {
   projectDirFromInput,
   rawAgentNameFromInput,
 } = require('./step-ledger-gate.cjs');
+const { sanitizeSpanPayload } = require('../lib/langfuse-sanitizer.cjs');
 
 const BEFORE_HOOK_MARKER = Symbol.for('pipeline-orchestrator.langfuse.tool.execute.before.processed');
 const AFTER_HOOK_MARKER = Symbol.for('pipeline-orchestrator.langfuse.tool.execute.after.processed');
@@ -77,12 +78,13 @@ function truncate(text) {
 
 function redactSpanText(value) {
   const text = typeof value === 'string' ? value : JSON.stringify(value == null ? '' : value);
-  return truncate(redactString(text)
+  const redacted = redactString(text)
     .replace(/"([^"]*(?:TOKEN|SECRET|PASSWORD|API[_-]?KEY|ACCESS[_-]?KEY|PRIVATE[_-]?KEY)[^"]*)"\s*:\s*"[^"]*"/gi, '"$1":"[REDACTED_SECRET]"')
     .replace(/\b([A-Za-z_][A-Za-z0-9_]*(?:TOKEN|SECRET|PASSWORD|API[_-]?KEY|ACCESS[_-]?KEY|PRIVATE[_-]?KEY))\s*[:=]\s*[^\s,;]+/gi, '$1=[REDACTED_SECRET]')
     .replace(/\b(xox[baprs]-[A-Za-z0-9-]{10,}|glpat-[A-Za-z0-9_-]{10,}|npm_[A-Za-z0-9_-]{10,})\b/g, '[REDACTED_SECRET]')
     .replace(/\bAuthorization\s*:\s*Bearer\s+[A-Za-z0-9._~+/=-]+/gi, 'Authorization: Bearer [REDACTED_SECRET]')
-    .replace(/\b(sk-[A-Za-z0-9_-]{10,}|ghp_[A-Za-z0-9_]{20,}|github_pat_[A-Za-z0-9_]{30,}|AKIA[0-9A-Z]{16}|ASIA[0-9A-Z]{16}|AIza[0-9A-Za-z_-]{20,})\b/g, '[REDACTED_SECRET]'));
+    .replace(/\b(sk-[A-Za-z0-9_-]{10,}|ghp_[A-Za-z0-9_]{20,}|github_pat_[A-Za-z0-9_]{30,}|AKIA[0-9A-Z]{16}|ASIA[0-9A-Z]{16}|AIza[0-9A-Za-z_-]{20,})\b/g, '[REDACTED_SECRET]');
+  return truncate(sanitizeSpanPayload(redacted, process.env.OPENCODE_PLUGIN_ROOT || process.env.CLAUDE_PLUGIN_ROOT));
 }
 
 function sanitizeMetaValue(value) {
@@ -223,7 +225,11 @@ function resolveClient(options = {}) {
   if (typeof options.getClient === 'function') {
     try { return options.getClient(); } catch (_) { return null; }
   }
-  return null;
+  try { return require('../lib/langfuse-client.cjs').getClient(); } catch (_) { return null; }
+}
+
+function hasClientMethods(client) {
+  return !!(client && (typeof client.trace === 'function' || typeof client.span === 'function'));
 }
 
 function traceNameFor(state) {
@@ -313,7 +319,7 @@ function handleToolExecuteBefore(input, output = {}, options = {}) {
   if (!shouldSample(sampleRate(options.env || process.env), options.random || Math.random)) return output;
 
   const client = resolveClient(options);
-  if (!client) return output;
+  if (!hasClientMethods(client)) return output;
 
   const args = argsFromInput(input, output);
   const runId = runIdFromState(state);
@@ -360,7 +366,7 @@ function handleToolExecuteAfter(input, output = {}, options = {}) {
   const carrier = readAndDeleteSpanCarrier(activeCarrierPath(runId, toolUseId, options));
   if (!carrier) return output;
   const client = resolveClient(options);
-  if (!client) return output;
+  if (!hasClientMethods(client)) return output;
   try { closeSpan(client, carrier, toolResponseFrom(input, output), options.nowIso); } catch (_) { /* telemetry never blocks tool execution */ }
   if (typeof options.audit === 'function') {
     try { options.audit({ type: 'langfuse.close', runId: carrier.runId, agentName: carrier.agentName, recorded: true }); } catch (_) { /* telemetry audit never blocks */ }
@@ -402,6 +408,7 @@ module.exports = {
   readAndDeleteSpanCarrier,
   loadActiveState,
   resolveClient,
+  hasClientMethods,
   traceNameFor,
   openSpan,
   duration,

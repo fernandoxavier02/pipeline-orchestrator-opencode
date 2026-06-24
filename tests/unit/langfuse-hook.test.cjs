@@ -2,6 +2,7 @@
 
 const assert = require('node:assert/strict');
 const fs = require('node:fs');
+const Module = require('node:module');
 const os = require('node:os');
 const path = require('node:path');
 const { pathToFileURL } = require('node:url');
@@ -92,6 +93,9 @@ function fakeClient() {
 
 const originalEnabled = process.env.LANGFUSE_ENABLED;
 const originalSample = process.env.LANGFUSE_SAMPLE_RATE;
+const originalPublicKey = process.env.LANGFUSE_PUBLIC_KEY;
+const originalSecretKey = process.env.LANGFUSE_SECRET_KEY;
+const originalOpenAiKey = process.env.OPENAI_API_KEY;
 
 try {
   delete process.env.LANGFUSE_ENABLED;
@@ -130,7 +134,7 @@ try {
   assert.equal(client.calls[1].method, 'trace.span');
   assert.equal(client.calls[1].payload.name, 'pipeline-implementer');
   assert.equal(client.calls[1].payload.startTime, '2026-06-23T13:00:00.000Z');
-  assert.match(client.calls[1].payload.input, /\[REDACTED_SECRET\]/);
+  assert.match(client.calls[1].payload.input, /\[REDACTED(?:_SECRET)?\]/);
   assert.equal(client.calls[1].payload.metadata.agent_name, 'pipeline-implementer');
 
   langfuse.handleToolExecuteAfter({ ...agentInput(governed.project), tool_response: { ok: true, token: 'abc123' } }, {}, {
@@ -141,7 +145,7 @@ try {
   assert.equal(client.calls.at(-1).method, 'span.end');
   assert.equal(client.calls.at(-1).payload.endTime, '2026-06-23T13:00:00.001Z');
   assert.equal(client.calls.at(-1).payload.metadata.duration_ms, 1);
-  assert.match(client.calls.at(-1).payload.output, /\[REDACTED_SECRET\]/);
+  assert.match(client.calls.at(-1).payload.output, /\[REDACTED(?:_SECRET)?\]/);
 
   const stateGone = projectWithState(sentinel({ runId: 'run-state-gone' }));
   const stateGoneClient = fakeClient();
@@ -212,8 +216,8 @@ try {
     nowIso: '2026-06-23T13:00:20.000Z',
     audit: (event) => secretAuditEvents.push(event),
   });
-  assert.match(secretNameClient.calls[0].payload.name, /\[REDACTED_SECRET\]/);
-  assert.match(secretNameClient.calls[1].payload.name, /\[REDACTED_SECRET\]/);
+  assert.match(secretNameClient.calls[0].payload.name, /\[REDACTED(?:_SECRET)?\]/);
+  assert.match(secretNameClient.calls[1].payload.name, /\[REDACTED(?:_SECRET)?\]/);
   const secretCarrierPath = langfuse.spanCarrierPath('run-secret password=abc123', 'dispatch-secret-name', { carrierRoot });
   assert.equal(fs.readFileSync(secretCarrierPath, 'utf8').includes('abc123'), false);
   assert.equal(JSON.stringify(secretAuditEvents).includes('abc123'), false);
@@ -230,6 +234,40 @@ try {
     nowIso: '2026-06-23T13:00:31.000Z',
     audit: () => { throw new Error('audit failed'); },
   }));
+
+  const originalLoad = Module._load;
+  const defaultClientCalls = [];
+  Module._load = function patchedLoad(request, parent, isMain) {
+    if (request === 'langfuse') {
+      return class FakeLangfuse {
+        trace(payload) {
+          defaultClientCalls.push({ method: 'trace', payload });
+          return { span: (spanPayload) => defaultClientCalls.push({ method: 'trace.span', payload: spanPayload }) };
+        }
+      };
+    }
+    return originalLoad.call(this, request, parent, isMain);
+  };
+  try {
+    process.env.LANGFUSE_PUBLIC_KEY = 'public-test-key';
+    process.env.LANGFUSE_SECRET_KEY = 'secret-test-value';
+    process.env.OPENAI_API_KEY = 'env-secret-value-12345';
+    langfuse.handleToolExecuteBefore(agentInput(governed.project, { tool_use_id: 'dispatch-default-client' }), {}, {
+      carrierRoot,
+      nowIso: '2026-06-23T13:00:40.000Z',
+    });
+    assert.equal(defaultClientCalls.some((call) => call.method === 'trace.span'), true);
+    langfuse.handleToolExecuteBefore(agentInput(governed.project, {
+      tool_use_id: 'dispatch-env-secret',
+      args: { agentName: 'pipeline-implementer', prompt: 'env-secret-value-12345' },
+    }), {}, {
+      carrierRoot,
+      nowIso: '2026-06-23T13:00:41.000Z',
+    });
+    assert.equal(JSON.stringify(defaultClientCalls).includes('env-secret-value-12345'), false);
+  } finally {
+    Module._load = originalLoad;
+  }
 
   const skipped = fakeClient();
   process.env.LANGFUSE_SAMPLE_RATE = '0';
@@ -292,4 +330,10 @@ try {
   else process.env.LANGFUSE_ENABLED = originalEnabled;
   if (originalSample === undefined) delete process.env.LANGFUSE_SAMPLE_RATE;
   else process.env.LANGFUSE_SAMPLE_RATE = originalSample;
+  if (originalPublicKey === undefined) delete process.env.LANGFUSE_PUBLIC_KEY;
+  else process.env.LANGFUSE_PUBLIC_KEY = originalPublicKey;
+  if (originalSecretKey === undefined) delete process.env.LANGFUSE_SECRET_KEY;
+  else process.env.LANGFUSE_SECRET_KEY = originalSecretKey;
+  if (originalOpenAiKey === undefined) delete process.env.OPENAI_API_KEY;
+  else process.env.OPENAI_API_KEY = originalOpenAiKey;
 }

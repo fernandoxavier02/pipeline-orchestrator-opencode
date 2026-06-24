@@ -20,6 +20,9 @@
     "install:dry-run": "node scripts/install.cjs",
     "prepublishOnly": "npm test"
   },
+  "dependencies": {
+    "langfuse": "3.38.4"
+  },
   "engines": {
     "node": ">=18.0.0"
   },

@@ -165,7 +165,7 @@
 |---|---|---|---|---|---|
 | W6.1 | `src/opencode/human-gate-record.cjs` | `.claude/hooks/human-gate-record.cjs` (135) | hook `permission.replied` + `question.replied` + `event` (observer) | A | DONE 2026-06-23: append HUMAN_GATE/AUDIT/CONFIRMED em gate-decisions.jsonl; resposta real obrigatoria; redaction aplicada; teste passa; evidencia em `tmp/w6-1-human-gate-record-evidence.md` |
 | W6.2 | `src/opencode/langfuse-hook.cjs` (mod) | `.claude/hooks/langfuse-hook.cjs` (813) | hooks `tool.execute.before` + `tool.execute.after` para `agent` | A+B | DONE 2026-06-23: span start/end com metadados do subagente; opt-in via LANGFUSE_ENABLED; carrier protegido contra overwrite/tamper; nomes e saidas sanitizados; teste passa; evidencia em `tmp/w6-2-langfuse-hook-evidence.md` |
-| W6.3 | `src/lib/langfuse-client.cjs` + `langfuse-carrier.cjs` + `langfuse-sanitizer.cjs` | `lib/langfuse-*.cjs` | porta direta D | D | exports confirmados; testes passam |
+| W6.3 | `src/lib/langfuse-client.cjs` + `langfuse-carrier.cjs` + `langfuse-sanitizer.cjs` | `lib/langfuse-*.cjs` | porta segura local dos contratos D | D | DONE 2026-06-24: exports confirmados; cliente real atras de opt-in; dependencia declarada; carrier com criacao exclusiva; sanitizador cobre env secrets; testes passam; evidencia em `tmp/w6-3-langfuse-libs-evidence.md` |
 
 **Esforço:** médio (3 slices, 1 observer + 1 A+B + 1 D).
 **Risco:** baixo. Telemetria não bloqueia. W6.1 usa `permission.replied` que é observer por design.
