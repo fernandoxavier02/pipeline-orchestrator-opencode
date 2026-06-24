@@ -18,6 +18,12 @@ const modeSkillNames = [
   'spec-light',
   'spec-heavy',
 ];
+const auxiliarySkillNames = [
+  'pipeline-contracts',
+  'pipeline-tdd',
+  'pipeline-adversarial-review',
+  'verify-completion',
+];
 const expectedModeStepCounts = {
   'bugfix-light': 8,
   'bugfix-heavy': 11,
@@ -34,15 +40,13 @@ const result = validateSkillDirectory({
   root,
   skillNames: [
     'pipeline-orchestrator',
-    'pipeline-contracts',
-    'pipeline-tdd',
-    'pipeline-adversarial-review',
+    ...auxiliarySkillNames,
     ...modeSkillNames,
   ],
 });
 
 assert.equal(result.ok, true, JSON.stringify(result.errors, null, 2));
-assert.equal(result.skills.length, 14);
+assert.equal(result.skills.length, 15);
 for (const skill of result.skills) {
   assert.equal(skill.name, skill.folderName);
   assert.match(skill.description, /Use when/);
@@ -82,6 +86,25 @@ for (const marker of [
   /Original Claude Code plugin files are read-only/i,
 ]) {
   assert.match(orchestratorSkill.body, marker);
+}
+
+for (const skillName of auxiliarySkillNames) {
+  const skill = result.skills.find((item) => item.name === skillName);
+  assert.ok(skill, `${skillName} was not loaded`);
+  assert.ok(skill.body.split(/\r?\n/).filter((line) => line.trim().length > 0).length >= 30, `${skillName} skill is too short`);
+  assert.match(skill.body, /local OpenCode adaptation/i);
+  assert.match(skill.body, /not full canonical parity/i);
+  assert.match(skill.body, /structured question gate/i);
+  assert.match(skill.body, /reject missing evidence/i);
+  assert.match(skill.body, /untrusted/i);
+  assert.match(skill.body, /acceptance/i);
+  assert.match(skill.body, /RED/i);
+  assert.match(skill.body, /GREEN/i);
+  assert.match(skill.body, /prompt result/i);
+  assert.match(skill.body, /review result/i);
+  assert.match(skill.body, /final verdict/i);
+  assert.match(skill.body, /Original Claude Code plugin files are read-only/i);
+  assert.doesNotMatch(skill.body, /AskUserQuestion/);
 }
 
 for (const skillName of modeSkillNames) {

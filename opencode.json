@@ -64,6 +64,11 @@
       "description": "Run the heavier Pipeline Orchestrator SPEC flow.",
       "agent": "pipeline-run-orchestrator",
       "template": "Use the pipeline-orchestrator skill, pipeline-contracts skill, and pipeline-adversarial-review skill.\n\nRun the heavy SPEC pipeline for: $ARGUMENTS\n\nRequire requirements, DDD, contracts, test strategy, risks, post-implementation gates, acceptance traceability, adversarial spec review, and final verdict evidence."
+    },
+    "verify-completion": {
+      "description": "Verify Pipeline Orchestrator evidence before closeout.",
+      "agent": "pipeline-run-orchestrator",
+      "template": "Use the verify-completion skill and pipeline-contracts skill.\n\nVerify completion for: $ARGUMENTS\n\nUse structured gates for any missing safety, scope, TDD, protected original file, external sending, or consent decision. Require acceptance evidence, RED test evidence, GREEN test evidence, prompt result, review result, and final verdict before closeout. Do not touch original Claude Code plugin files."
     }
   }
 }
