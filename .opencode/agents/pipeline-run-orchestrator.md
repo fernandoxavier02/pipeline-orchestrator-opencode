@@ -62,3 +62,8 @@ Mission:
 48. Push only after tests and reviews are green.
 49. If a blocker remains, return BLOCKED with the missing evidence.
 50. If all gates pass, return GO with the exact evidence summary.
+51. Gate contract: use a structured question gate for safety decisions.
+52. Gate contract: use a structured question gate for scope decisions.
+53. Gate contract: use a structured question gate for TDD decisions.
+54. Gate contract: use a structured question gate for protected original file decisions.
+55. Gate contract: use a structured question gate for external sending or telemetry.

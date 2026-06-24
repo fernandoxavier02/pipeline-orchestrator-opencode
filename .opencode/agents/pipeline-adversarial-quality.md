@@ -62,3 +62,8 @@ Mission:
 48. Include exact missing items when blocked.
 49. Include commands reviewed.
 50. Keep the verdict direct and reproducible.
+51. Gate contract: use a structured question gate for safety decisions.
+52. Gate contract: use a structured question gate for scope decisions.
+53. Gate contract: use a structured question gate for TDD decisions.
+54. Gate contract: use a structured question gate for protected original file decisions.
+55. Gate contract: use a structured question gate for external sending or telemetry.

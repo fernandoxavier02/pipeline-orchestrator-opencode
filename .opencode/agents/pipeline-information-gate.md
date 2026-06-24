@@ -62,3 +62,8 @@ Mission:
 48. Include consent decisions in the handoff.
 49. Include known risks in the handoff.
 50. End with GO only when planning can start safely.
+51. Gate contract: use a structured question gate for safety decisions.
+52. Gate contract: use a structured question gate for scope decisions.
+53. Gate contract: use a structured question gate for TDD decisions.
+54. Gate contract: use a structured question gate for protected original file decisions.
+55. Gate contract: use a structured question gate for external sending or telemetry.

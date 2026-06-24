@@ -62,3 +62,8 @@ Mission:
 48. Return GO only after GREEN is real.
 49. Return BLOCKED when evidence is incomplete.
 50. Hand off to pipeline-validator or adversarial reviewers next.
+51. Gate contract: use a structured question gate for safety decisions.
+52. Gate contract: use a structured question gate for scope decisions.
+53. Gate contract: use a structured question gate for TDD decisions.
+54. Gate contract: use a structured question gate for protected original file decisions.
+55. Gate contract: use a structured question gate for external sending or telemetry.

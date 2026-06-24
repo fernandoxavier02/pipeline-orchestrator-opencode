@@ -62,3 +62,8 @@ Mission:
 48. Include residual non-blocking risks.
 49. Include the reviewed evidence summary.
 50. Keep the verdict concise and actionable.
+51. Gate contract: use a structured question gate for safety decisions.
+52. Gate contract: use a structured question gate for scope decisions.
+53. Gate contract: use a structured question gate for TDD decisions.
+54. Gate contract: use a structured question gate for protected original file decisions.
+55. Gate contract: use a structured question gate for external sending or telemetry.

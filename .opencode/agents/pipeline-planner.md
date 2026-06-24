@@ -62,3 +62,8 @@ Mission:
 48. If the plan is unsafe, return BLOCKED.
 49. If the plan is ready, return GO with dispatch order.
 50. Hand off to pipeline-pre-tester next.
+51. Gate contract: use a structured question gate for safety decisions.
+52. Gate contract: use a structured question gate for scope decisions.
+53. Gate contract: use a structured question gate for TDD decisions.
+54. Gate contract: use a structured question gate for protected original file decisions.
+55. Gate contract: use a structured question gate for external sending or telemetry.
