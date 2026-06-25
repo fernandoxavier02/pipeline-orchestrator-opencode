@@ -224,7 +224,7 @@
 | W9.3 DONE | Expandir skill `pipeline-orchestrator` | `skills/pipeline/SKILL.md` + `skills/pipeline/SKILL.v3-reference.md` | SKILL.md detalhado com fases, gates, Iron Laws; ≥ 100 linhas; evidência em `tmp/w9-3-pipeline-skill-evidence.md` |
 | W9.4 DONE | Portar skills de modo (10) | `skills/bugfix-light/` + `bugfix-heavy/` + `feature-light/` + `feature-heavy/` + `audit-light/` + `audit-heavy/` + `ux-sim-light/` + `ux-sim-heavy/` + `spec-light/` + `spec-heavy/` (com step files) | 10 skills com step files em `.opencode/skills/`; teste valida contagem e passo inicial; evidência em `tmp/w9-4-mode-skills-evidence.md` |
 | W9.5 DONE | Portar skills auxiliares | `skills/pipeline-contracts`, `pipeline-tdd`, `pipeline-adversarial-review`, `verify-completion` | 3 skills expandidas + `verify-completion` criada e exposta como comando; evidência em `tmp/w9-5-auxiliary-skills-evidence.md` |
-| W9.6 | Commands: adicionar `help` | `commands/help.md` | novo command em `opencode.json` |
+| W9.6 DONE | Commands: adicionar `help` | `commands/help.md` | novo command em `.opencode/commands/help.md` e `opencode.json`; evidência em `tmp/w9-6-help-command-evidence.md` |
 
 **Esforço:** alto (6 slices, volume grande de prompts para adaptar).
 **Risco:** médio. Adaptação de nomes de tools é mecânica mas volume é grande.

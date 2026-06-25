@@ -15,12 +15,13 @@ const result = validateCommandConfig({
     'feature-light',
     'feature-heavy',
     'verify-completion',
+    'help',
   ],
 });
 
 assert.equal(result.ok, true, JSON.stringify(result.errors, null, 2));
-assert.equal(result.commands.length, 7);
-assert.equal(result.configCommands.length, 7);
+assert.equal(result.commands.length, 8);
+assert.equal(result.configCommands.length, 8);
 assert.equal(result.configPath, path.join(root, 'opencode.json'));
 
 for (const command of result.commands) {
@@ -39,6 +40,19 @@ const verifyCompletion = result.commands.find((command) => command.name === 'ver
 assert.ok(verifyCompletion);
 assert.match(verifyCompletion.template, /verify-completion skill/);
 assert.match(verifyCompletion.template, /final verdict/i);
+
+const help = result.commands.find((command) => command.name === 'help');
+assert.ok(help);
+assert.match(help.template, /local OpenCode adaptation/i);
+assert.match(help.template, /not full canonical parity/i);
+assert.match(help.template, /structured gates/i);
+assert.match(help.template, /acceptance/i);
+assert.match(help.template, /RED/i);
+assert.match(help.template, /GREEN/i);
+assert.match(help.template, /prompt result/i);
+assert.match(help.template, /review result/i);
+assert.match(help.template, /final verdict/i);
+assert.match(help.template, /verify-completion/i);
 
 for (const command of result.configCommands) {
   const fileCommand = result.commands.find((candidate) => candidate.name === command.name);
