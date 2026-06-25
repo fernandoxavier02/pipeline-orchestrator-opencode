@@ -16,42 +16,56 @@ classificação de tarefas, gates estruturados, TDD obrigatório, revisão adver
 contexto isolado e trilha de auditoria. Cobre os modos bugfix, feature, audit, UX e SPEC,
 cada um em variante leve e pesada.
 
-## Instalação via npm
+## Instalação
 
 ```bash
 # instalar o pacote
 npm install -g @fx-studio-ai/pipeline-orchestrator-opencode
 
-# simular a instalação dos artefatos em um projeto OpenCode (não escreve nada)
+# instalar globalmente no OpenCode deste computador
+pipeline-orchestrator-opencode-install --global --apply
+
+# simular a instalação em um projeto específico (não escreve nada)
 pipeline-orchestrator-opencode-install --target /caminho/do/projeto
 
-# aplicar de fato
+# aplicar em um projeto específico
 pipeline-orchestrator-opencode-install --target /caminho/do/projeto --apply
 ```
 
 O comando copia os artefatos do `.opencode/` (agents, skills, plugins, commands) e o
-`opencode.json` para o projeto-alvo. A instalação **global** (`~/.config/opencode/`) usa um
-layout diferente (sem o prefixo `.opencode/`) e é feita por cópia manual dos mesmos artefatos —
-veja a seção "Instalação global" abaixo.
+`opencode.json` para o projeto-alvo. A instalação **global** grava em `~/.config/opencode/`,
+usa o layout global do OpenCode e deixa os comandos disponíveis em todos os projetos deste computador.
 
-### Instalação global (manual)
+Se o seu arquivo global do OpenCode tiver chaves de provedores gravadas diretamente, a instalação
+global para e pede aprovação explícita antes de migrar esses segredos para variáveis de ambiente.
+Nesse caso, rode novamente com `--migrate-provider-secrets` somente se você aprovar essa migração.
 
-Copie `.opencode/agents`, `.opencode/skills`, `.opencode/plugins`, `.opencode/commands` e
-`opencode.json` para `~/.config/opencode/` (os nomes de comando globais usam prefixo `pipeline-`
-para evitar colisão).
+## Como usar
+
+Depois da instalação global, abra qualquer projeto no OpenCode e use um destes comandos:
+
+- `/pipeline`: fluxo completo governado.
+- `/bugfix`: correção de bug com roteamento automático.
+- `/bugfix-light` e `/bugfix-heavy`: correções leves ou pesadas.
+- `/feature-light` e `/feature-heavy`: entrega de funcionalidade.
+- `/audit-light` e `/audit-heavy`: auditoria somente leitura.
+- `/ux-light` e `/ux-heavy`: revisão de experiência do usuário.
+- `/spec-light` e `/spec-heavy`: criação ou revisão de especificação.
+- `/verify-completion`: verifica evidências antes de declarar pronto.
+- `/Pipeline Orchestrator Help`: mostra o guia de uso dentro do OpenCode.
 
 ## Verificação
 
 ```bash
-npm test      # roda a suíte local (56 testes)
+npm test
 ```
 
 ## Estrutura
 
 ```
 .
-├─ src/          runtime, validators, state, verification (51 módulos)
-├─ tests/        suíte de contrato + unitária (56 testes)
+├─ src/          runtime, validators, state, verification
+├─ tests/        suíte de contrato + unitária
 ├─ specs/        spec canonical-parity-bugfix
 ├─ scripts/      run-tests.cjs, install.cjs
 ├─ .opencode/    produto instalável (agents, commands, skills, plugins)

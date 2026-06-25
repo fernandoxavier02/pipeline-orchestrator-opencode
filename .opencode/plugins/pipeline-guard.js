@@ -12,3 +12,5 @@ export const PipelineGuard = async function pipelineGuardPlugin(_input = {}, opt
     audit: options.audit || (() => {}),
   });
 };
+
+export default PipelineGuard;

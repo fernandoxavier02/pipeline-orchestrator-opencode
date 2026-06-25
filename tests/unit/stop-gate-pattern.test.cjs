@@ -111,7 +111,7 @@ assert.match(skillText, /observer-only/);
 
 const opencodeConfig = readJson(path.join(__dirname, '..', '..', 'opencode.json'));
 assert.equal(Array.isArray(opencodeConfig.plugin), true);
-assert.equal(opencodeConfig.plugin.includes('./plugins/pipeline-adaptation-plugin.js'), true);
+assert.equal(opencodeConfig.plugin.includes('./.opencode/plugins/pipeline-adaptation-plugin.js'), true);
 
 assertOpenCodePluginFileRegistersStopGate()
   .then(() => console.log('stop gate pattern OK'))

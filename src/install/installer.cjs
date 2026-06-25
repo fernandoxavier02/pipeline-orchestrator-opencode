@@ -11,6 +11,8 @@ const GLOBAL_REQUIRED_PATHS = Object.freeze([
   '.opencode/commands',
   'opencode.json',
   'src/opencode/plugin-guard.cjs',
+  'src/opencode/detect-shell-write.cjs',
+  'src/validators/contract-validator.cjs',
 ]);
 
 const GLOBAL_PLUGIN_ENTRIES = Object.freeze([
@@ -74,6 +76,8 @@ function collectFiles(root, relativeRoot) {
 
 function makeGlobalPluginArtifacts(sourceRoot) {
   const runtimePath = path.join(sourceRoot, 'src', 'opencode', 'plugin-guard.cjs');
+  const detectShellWritePath = path.join(sourceRoot, 'src', 'opencode', 'detect-shell-write.cjs');
+  const contractValidatorPath = path.join(sourceRoot, 'src', 'validators', 'contract-validator.cjs');
   const adaptationRuntimePath = path.join(sourceRoot, 'src', 'opencode', 'pipeline-adaptation-plugin.cjs');
   return [
     {
@@ -87,6 +91,14 @@ function makeGlobalPluginArtifacts(sourceRoot) {
     {
       relativePath: 'plugins/pipeline-guard-runtime.cjs',
       sourcePath: runtimePath,
+    },
+    {
+      relativePath: 'plugins/detect-shell-write.cjs',
+      sourcePath: detectShellWritePath,
+    },
+    {
+      relativePath: 'validators/contract-validator.cjs',
+      sourcePath: contractValidatorPath,
     },
   ];
 }

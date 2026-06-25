@@ -26,7 +26,9 @@ function makeSourceRoot() {
   write(path.join(root, '.opencode', 'plugins', 'pipeline-adaptation-plugin.js'), 'export default async function plugin() { return {}; }\n');
   write(path.join(root, '.opencode', 'plugins', 'pipeline-guard.js'), 'broken project-local import ../../src/opencode/plugin-guard.cjs');
   write(path.join(root, 'src', 'opencode', 'plugin-guard.cjs'), "'use strict';\nmodule.exports = { createPipelineGuardHooks() { return {}; } };\n");
+  write(path.join(root, 'src', 'opencode', 'detect-shell-write.cjs'), "'use strict';\nmodule.exports = { detectShellWrite() { return false; } };\n");
   write(path.join(root, 'src', 'opencode', 'pipeline-adaptation-plugin.cjs'), "'use strict';\nmodule.exports = { createPipelineAdaptationHooks() { return { 'experimental.session.compacting': () => {}, 'tool.execute.before': () => {} }; } };\n");
+  write(path.join(root, 'src', 'validators', 'contract-validator.cjs'), "'use strict';\nmodule.exports = { isPlanGateArmed() { return false; } };\n");
   write(path.join(root, 'opencode.json'), JSON.stringify({
     $schema: 'https://opencode.ai/config.json',
     command: {
@@ -72,6 +74,8 @@ assert.equal(plan.ok, true);
 assert.equal(plan.missingRequired.length, 0);
 assert.ok(plan.operations.some((op) => op.relativePath === 'commands/pipeline.md'));
 assert.ok(plan.operations.some((op) => op.relativePath === 'plugins/pipeline-guard-runtime.cjs'));
+assert.ok(plan.operations.some((op) => op.relativePath === 'plugins/detect-shell-write.cjs'));
+assert.ok(plan.operations.some((op) => op.relativePath === 'validators/contract-validator.cjs'));
 assert.ok(!plan.operations.some((op) => op.relativePath.includes('.opencode/tools')));
 
 const envWrites = [];
@@ -115,6 +119,14 @@ assert.equal(
 );
 assert.equal(
   fs.existsSync(path.join(targetRoot, 'plugins', 'pipeline-guard-runtime.cjs')),
+  true,
+);
+assert.equal(
+  fs.existsSync(path.join(targetRoot, 'plugins', 'detect-shell-write.cjs')),
+  true,
+);
+assert.equal(
+  fs.existsSync(path.join(targetRoot, 'validators', 'contract-validator.cjs')),
   true,
 );
 assert.doesNotMatch(

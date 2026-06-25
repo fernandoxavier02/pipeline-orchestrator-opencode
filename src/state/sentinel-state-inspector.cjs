@@ -62,6 +62,12 @@ function isTrustedOpenCodeConfigDir(configDir) {
   return base === 'opencode' || base === '.opencode';
 }
 
+function isTrustedStatePath(projectDir, candidate) {
+  const pipelineRoot = path.resolve(projectDir, '.pipeline');
+  const pipelineRunsRoot = path.resolve(projectDir, 'pipeline-runs');
+  return containedIn(pipelineRoot, candidate) || containedIn(pipelineRunsRoot, candidate);
+}
+
 function readValidSentinelState(statePath) {
   let state;
   try {
@@ -89,7 +95,7 @@ function resolveHandshakeTimeoutMs() {
 function discoverStatePath(projectDir) {
   const pipelineRoot = path.resolve(projectDir, '.pipeline');
   const docsRoot = path.join(pipelineRoot, 'docs');
-  const contained = (candidate) => containedIn(pipelineRoot, candidate);
+  const contained = (candidate) => isTrustedStatePath(projectDir, candidate);
 
   const docPathEnv = process.env.PIPELINE_DOC_PATH;
   if (typeof docPathEnv === 'string' && docPathEnv.trim()) {
@@ -110,6 +116,8 @@ function discoverStatePath(projectDir) {
 
   const runId = process.env.PIPELINE_RUN_ID;
   if (typeof runId === 'string' && /^[A-Za-z0-9._-]{1,128}$/.test(runId)) {
+    const runStatePath = path.join(projectDir, 'pipeline-runs', runId, 'sentinel-state.json');
+    if (fs.existsSync(runStatePath) && contained(path.dirname(runStatePath))) return { statePath: runStatePath, authoritative: true };
     try {
       for (const preDir of fs.readdirSync(docsRoot).filter((name) => /^Pre-.*-action$/.test(name))) {
         const candidate = path.join(docsRoot, preDir, runId, 'sentinel-state.json');
@@ -121,6 +129,22 @@ function discoverStatePath(projectDir) {
   }
 
   const candidates = [];
+  try {
+    const runsRoot = path.join(projectDir, 'pipeline-runs');
+    if (contained(runsRoot)) {
+      for (const entry of fs.readdirSync(runsRoot, { withFileTypes: true }).filter((item) => item.isDirectory())) {
+        const statePath = path.join(runsRoot, entry.name, 'sentinel-state.json');
+        try {
+          if (!contained(path.dirname(statePath))) continue;
+          candidates.push({ statePath, mtime: fs.statSync(statePath).mtimeMs });
+        } catch (_) {
+          // Ignore missing or unreadable fallback candidates.
+        }
+      }
+    }
+  } catch (_) {
+    // No pipeline-runs root.
+  }
   try {
     for (const preDir of fs.readdirSync(docsRoot).filter((name) => /^Pre-.*-action$/.test(name))) {
       const preDirPath = path.join(docsRoot, preDir);
@@ -161,13 +185,13 @@ function findActiveSentinelState(projectDir) {
   const pipelineRoot = path.resolve(projectDir, '.pipeline');
 
   if (authoritative) {
-    if (!containedIn(pipelineRoot, statePath)) return CORRUPT_SENTINEL;
+    if (!isTrustedStatePath(projectDir, statePath)) return CORRUPT_SENTINEL;
     const result = readValidSentinelState(statePath);
     return result.corrupt ? CORRUPT_SENTINEL : result.state;
   }
 
   const fallbackStatePath = (fallbackStatePaths || [statePath])[0];
-  if (!containedIn(pipelineRoot, fallbackStatePath)) return CORRUPT_SENTINEL;
+  if (!isTrustedStatePath(projectDir, fallbackStatePath)) return CORRUPT_SENTINEL;
   const result = readValidSentinelState(fallbackStatePath);
   return result.corrupt ? CORRUPT_SENTINEL : result.state;
 }

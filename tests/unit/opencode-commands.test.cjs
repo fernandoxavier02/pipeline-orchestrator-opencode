@@ -16,12 +16,13 @@ const result = validateCommandConfig({
     'feature-heavy',
     'verify-completion',
     'help',
+    'Pipeline Orchestrator Help',
   ],
 });
 
 assert.equal(result.ok, true, JSON.stringify(result.errors, null, 2));
-assert.equal(result.commands.length, 8);
-assert.equal(result.configCommands.length, 8);
+assert.equal(result.commands.length, 9);
+assert.equal(result.configCommands.length, 9);
 assert.equal(result.configPath, path.join(root, 'opencode.json'));
 
 for (const command of result.commands) {
@@ -53,6 +54,15 @@ assert.match(help.template, /prompt result/i);
 assert.match(help.template, /review result/i);
 assert.match(help.template, /final verdict/i);
 assert.match(help.template, /verify-completion/i);
+
+const namedHelp = result.commands.find((command) => command.name === 'Pipeline Orchestrator Help');
+assert.ok(namedHelp);
+assert.match(namedHelp.template, /Pipeline Orchestrator OpenCode plugin/i);
+assert.match(namedHelp.template, /\/Pipeline Orchestrator Help/i);
+assert.match(namedHelp.template, /not full canonical parity/i);
+assert.match(namedHelp.template, /structured gates/i);
+assert.match(namedHelp.template, /RED/i);
+assert.match(namedHelp.template, /GREEN/i);
 
 for (const command of result.configCommands) {
   const fileCommand = result.commands.find((candidate) => candidate.name === command.name);

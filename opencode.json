@@ -1,8 +1,8 @@
 {
   "$schema": "https://opencode.ai/config.json",
   "plugin": [
-    "./plugins/pipeline-adaptation-plugin.js",
-    "./plugins/pipeline-guard.js"
+    "./.opencode/plugins/pipeline-adaptation-plugin.js",
+    "./.opencode/plugins/pipeline-guard.js"
   ],
   "command": {
     "pipeline": {
@@ -74,6 +74,11 @@
       "description": "Show Pipeline Orchestrator OpenCode help.",
       "agent": "pipeline-run-orchestrator",
       "template": "Use the pipeline-orchestrator skill and pipeline-contracts skill.\n\nShow help for the local OpenCode adaptation. This is a supported subset, not full canonical parity with the Claude Code plugin.\n\nList available commands: pipeline, bugfix, bugfix-light, bugfix-heavy, feature-light, feature-heavy, audit-light, audit-heavy, ux-light, ux-heavy, spec-light, spec-heavy, verify-completion, and help.\n\nExplain that structured gates are required for safety, scope, TDD, protected original file, external sending, and consent decisions. Explain that required evidence includes acceptance, RED test, GREEN test, prompt result, review result, and final verdict. Explain that verify-completion checks closeout evidence before claiming done. Do not touch original Claude Code plugin files."
+    },
+    "Pipeline Orchestrator Help": {
+      "description": "Show Pipeline Orchestrator OpenCode usage guide.",
+      "agent": "pipeline-run-orchestrator",
+      "template": "Use the pipeline-orchestrator skill and pipeline-contracts skill.\n\nShow a short user guide for the Pipeline Orchestrator OpenCode plugin.\n\nExplain that this is a local OpenCode adaptation, not full canonical parity with the Claude Code plugin.\n\nTeach these commands:\n- /pipeline: full governed pipeline.\n- /bugfix: bugfix pipeline with automatic routing.\n- /bugfix-light and /bugfix-heavy: explicit bugfix variants.\n- /feature-light and /feature-heavy: feature delivery variants.\n- /audit-light and /audit-heavy: read-only audit variants.\n- /ux-light and /ux-heavy: UX review variants.\n- /spec-light and /spec-heavy: specification variants.\n- /verify-completion: check evidence before claiming done.\n- /Pipeline Orchestrator Help: show this guide.\n\nExplain that structured gates are required for safety, scope, TDD, protected original file, external sending, and consent decisions. Explain that required evidence includes acceptance, RED test, GREEN test, prompt result, review result, and final verdict. Do not touch original Claude Code plugin files."
     }
   }
 }
