@@ -240,7 +240,7 @@
 
 | # | Slice | Origem canônica | Alvo porta | Aceitação |
 |---|---|---|---|---|
-| W10.1 | `src/lib/run-seal.cjs` | `lib/run-seal.cjs` (563) | porta direta D | `sealSpecRun` + 4 pre-seal preconditions; teste passa |
+| W10.1 DONE | `src/lib/run-seal.cjs` | `lib/run-seal.cjs` (563) | porta local com contenção `allowedRoot` | `sealSpecRun` + 4 pre-seal preconditions; 94 testes passam; evidência em `tmp/w10-1-run-seal-evidence.md` |
 | W10.2 | `src/lib/step-1-7-routing.cjs` | `lib/step-1-7-routing.cjs` (275) | porta direta D | `appendStep17Routing`, `branchToCanonical`, `BRANCH_VALUES`; teste passa |
 | W10.3 | `src/lib/run-directory.cjs` (mod) | `lib/run-directory.cjs` (234) | porta adaptada D | `allocate()` escreve active-run.json + sentinel-state.json; teste passa |
 | W10.4 | `src/lib/fidelity-reporter.cjs` (mod) | `lib/fidelity-reporter.cjs` (600) | porta adaptada D | `mandatorySetFor(complexity, type, variant)` flow-aware; teste passa |
