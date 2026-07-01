@@ -15,15 +15,15 @@ const result = validateCommandConfig({
     'feature-light',
     'feature-heavy',
     'verify-completion',
-    'help',
     'Pipeline Orchestrator Help',
   ],
 });
 
 assert.equal(result.ok, true, JSON.stringify(result.errors, null, 2));
-assert.equal(result.commands.length, 9);
-assert.equal(result.configCommands.length, 9);
+assert.equal(result.commands.length, 8);
+assert.equal(result.configCommands.length, 8);
 assert.equal(result.configPath, path.join(root, 'opencode.json'));
+assert.equal(Object.prototype.hasOwnProperty.call(require(path.join(root, 'opencode.json')).command, 'help'), false);
 
 for (const command of result.commands) {
   assert.equal(typeof command.description, 'string');
@@ -41,19 +41,6 @@ const verifyCompletion = result.commands.find((command) => command.name === 'ver
 assert.ok(verifyCompletion);
 assert.match(verifyCompletion.template, /verify-completion skill/);
 assert.match(verifyCompletion.template, /final verdict/i);
-
-const help = result.commands.find((command) => command.name === 'help');
-assert.ok(help);
-assert.match(help.template, /local OpenCode adaptation/i);
-assert.match(help.template, /not full canonical parity/i);
-assert.match(help.template, /structured gates/i);
-assert.match(help.template, /acceptance/i);
-assert.match(help.template, /RED/i);
-assert.match(help.template, /GREEN/i);
-assert.match(help.template, /prompt result/i);
-assert.match(help.template, /review result/i);
-assert.match(help.template, /final verdict/i);
-assert.match(help.template, /verify-completion/i);
 
 const namedHelp = result.commands.find((command) => command.name === 'Pipeline Orchestrator Help');
 assert.ok(namedHelp);

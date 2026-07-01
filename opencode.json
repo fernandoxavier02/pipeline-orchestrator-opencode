@@ -70,11 +70,6 @@
       "agent": "pipeline-run-orchestrator",
       "template": "Use the verify-completion skill and pipeline-contracts skill.\n\nVerify completion for: $ARGUMENTS\n\nUse structured gates for any missing safety, scope, TDD, protected original file, external sending, or consent decision. Require acceptance evidence, RED test evidence, GREEN test evidence, prompt result, review result, and final verdict before closeout. Do not touch original Claude Code plugin files."
     },
-    "help": {
-      "description": "Show Pipeline Orchestrator OpenCode help.",
-      "agent": "pipeline-run-orchestrator",
-      "template": "Use the pipeline-orchestrator skill and pipeline-contracts skill.\n\nShow help for the local OpenCode adaptation. This is a supported subset, not full canonical parity with the Claude Code plugin.\n\nList available commands: pipeline, bugfix, bugfix-light, bugfix-heavy, feature-light, feature-heavy, audit-light, audit-heavy, ux-light, ux-heavy, spec-light, spec-heavy, verify-completion, and help.\n\nExplain that structured gates are required for safety, scope, TDD, protected original file, external sending, and consent decisions. Explain that required evidence includes acceptance, RED test, GREEN test, prompt result, review result, and final verdict. Explain that verify-completion checks closeout evidence before claiming done. Do not touch original Claude Code plugin files."
-    },
     "Pipeline Orchestrator Help": {
       "description": "Show Pipeline Orchestrator OpenCode usage guide.",
       "agent": "pipeline-run-orchestrator",
