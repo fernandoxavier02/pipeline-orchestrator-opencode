@@ -1,81 +1,89 @@
 # Pipeline Orchestrator — OpenCode (standalone)
 
-Adaptação **independente** do Pipeline Orchestrator para o ecossistema [OpenCode](https://opencode.ai).
-Este projeto é **totalmente separado** do plugin canônico do Claude Code (repositório
-[`Pipeline-Orchestrator`](https://github.com/fernandoxavier02/Pipeline-Orchestrator)):
-repositório próprio, pacote npm próprio, execução própria. **Não compartilha código** com o canônico.
+<div align="center">
 
-- Distribuição: Git standalone
-- Runtime: Node.js ≥ 18, CommonJS
-- Produto instalável: `.opencode/` (agents, commands, skills, plugins) + `opencode.json`
+[![License: PolyForm Shield](https://img.shields.io/badge/License-PolyForm_Shield_1.0.0-blue.svg?style=for-the-badge)](LICENSE)
+[![Platform: OpenCode](https://img.shields.io/badge/Platform-OpenCode-green.svg?style=for-the-badge)](https://opencode.ai)
+[![FX Studio AI](https://img.shields.io/badge/FX_Studio_AI-Enterprise_Governance-FF6B6B?style=for-the-badge)](https://github.com/fernandoxavier02)
 
-## O que é
+**Independent adaptation of Pipeline Orchestrator for the OpenCode AI ecosystem.**
 
-Sistema de governança multi-agente que opera entre planejamento e entrega de código:
-classificação de tarefas, gates estruturados, TDD obrigatório, revisão adversarial com
-contexto isolado e trilha de auditoria. Cobre os modos bugfix, feature, audit, UX e SPEC,
-cada um em variante leve e pesada.
+</div>
 
-## Instalação
+---
+
+## 🌟 Overview
+
+**Pipeline Orchestrator for OpenCode** is a standalone multi-agent execution governance system operating between task planning and code delivery. It provides deterministic task classification, structured quality gates, enforced TDD cycles, adversarial review with isolated context, and immutable audit trails across bugfix, feature, audit, UX, and SPEC workflows.
+
+This repository is **completely standalone** from the canonical Claude Code plugin ([`Pipeline-Orchestrator`](https://github.com/fernandoxavier02/Pipeline-Orchestrator)): it features its own repository, standalone Git distribution, and runtime engine.
+
+- **Distribution:** Git standalone
+- **Runtime:** Node.js ≥ 18, CommonJS
+- **Installable Artifacts:** `.opencode/` (agents, commands, skills, plugins) + `opencode.json`
+
+---
+
+## 🚀 Installation
 
 ```bash
-# clonar o repositório
+# Clone the repository
 git clone https://github.com/fernandoxavier02/pipeline-orchestrator-opencode.git
 cd pipeline-orchestrator-opencode
 
-# instalar globalmente no OpenCode deste computador
+# Install globally into OpenCode configuration
 node scripts/install.cjs --global --apply
 
-# simular a instalação em um projeto específico (não escreve nada)
-node scripts/install.cjs --target /caminho/do/projeto
+# Dry-run installation for a specific target project (no writes)
+node scripts/install.cjs --target /path/to/project
 
-# aplicar em um projeto específico
-node scripts/install.cjs --target /caminho/do/projeto --apply
+# Apply installation to a specific target project
+node scripts/install.cjs --target /path/to/project --apply
 ```
 
-O comando copia os artefatos do `.opencode/` (agents, skills, plugins, commands) e o
-`opencode.json` para o projeto-alvo. A instalação **global** grava em `~/.config/opencode/`,
-usa o layout global do OpenCode e deixa os comandos disponíveis em todos os projetos deste computador.
+The installer copies artifacts from `.opencode/` and `opencode.json` to the target project. Global installation targets `~/.config/opencode/`, configuring global commands across all local workspaces.
 
-Se o seu arquivo global do OpenCode tiver chaves de provedores gravadas diretamente, a instalação
-global para e pede aprovação explícita antes de migrar esses segredos para variáveis de ambiente.
-Nesse caso, rode novamente com `--migrate-provider-secrets` somente se você aprovar essa migração.
+---
 
-## Como usar
+## 💡 How to Use
 
-Depois da instalação global, abra qualquer projeto no OpenCode e use um destes comandos:
+After global installation, launch any project in OpenCode and use the registered slash commands:
 
-- `/pipeline`: fluxo completo governado.
-- `/bugfix`: correção de bug com roteamento automático.
-- `/bugfix-light` e `/bugfix-heavy`: correções leves ou pesadas.
-- `/feature-light` e `/feature-heavy`: entrega de funcionalidade.
-- `/audit-light` e `/audit-heavy`: auditoria somente leitura.
-- `/ux-light` e `/ux-heavy`: revisão de experiência do usuário.
-- `/spec-light` e `/spec-heavy`: criação ou revisão de especificação.
-- `/verify-completion`: verifica evidências antes de declarar pronto.
-- `/Pipeline Orchestrator Help`: mostra o guia de uso dentro do OpenCode.
+- `/pipeline`: Full governed multi-agent execution pipeline.
+- `/bugfix`: Automated bug triage and root-cause remediation.
+- `/bugfix-light` & `/bugfix-heavy`: Lightweight or deep bugfix workflows.
+- `/feature-light` & `/feature-heavy`: Fast or exhaustive feature development cycles.
+- `/audit-light` & `/audit-heavy`: Read-only compliance and security auditing.
+- `/ux-light` & `/ux-heavy`: User experience and frontend review.
+- `/spec-light` & `/spec-heavy`: Spec generation and contract verification.
+- `/verify-completion`: Evidence verification before declaring completion.
+- `/Pipeline Orchestrator Help`: Interactive usage guide within OpenCode.
 
-## Verificação
+---
+
+## 🧪 Verification & Tests
 
 ```bash
 node scripts/run-tests.cjs
 ```
 
-## Estrutura
+---
+
+## 📁 Repository Structure
 
 ```
 .
-├─ src/          runtime, validators, state, verification
-├─ tests/        suíte de contrato + unitária
-├─ specs/        spec canonical-parity-bugfix
-├─ scripts/      run-tests.cjs, install.cjs
-├─ .opencode/    produto instalável (agents, commands, skills, plugins)
-├─ opencode.json comandos do OpenCode (pipeline, bugfix, feature, audit, ux, spec)
-└─ plan.md       plano de adaptação / fidelidade
+├── src/          # Runtime engine, validators, state machine, verification
+├── tests/        # Contract test suite + unit tests
+├── specs/        # Canonical parity bugfix specifications
+├── scripts/      # run-tests.cjs, install.cjs
+├── .opencode/    # Installable artifacts (agents, commands, skills, plugins)
+├── opencode.json # OpenCode command definitions
+└── plan.md       # Adaptation and parity roadmap
 ```
 
-## Relação com o canônico (Iron Law)
+---
 
-Este projeto **não modifica** o plugin canônico do Claude Code e **não é distribuído** junto
-com ele. As duas linhas evoluem de forma independente. Paridade de comportamento é validada por
-testes de contrato (`specs/canonical-parity-bugfix/`), não por compartilhamento de arquivos.
+## 🛡️ Relation to Canonical Pipeline Orchestrator
+
+This project **does not mutate** the canonical Claude Code plugin and **is not bundled** with it. Both lineages evolve independently. Behavioral parity is validated via contract tests (`specs/canonical-parity-bugfix/`).
