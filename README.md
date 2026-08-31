@@ -5,7 +5,7 @@ Este projeto é **totalmente separado** do plugin canônico do Claude Code (repo
 [`Pipeline-Orchestrator`](https://github.com/fernandoxavier02/Pipeline-Orchestrator)):
 repositório próprio, pacote npm próprio, execução própria. **Não compartilha código** com o canônico.
 
-- Pacote npm: `@fx-studio-ai/pipeline-orchestrator-opencode`
+- Distribuição: Git standalone
 - Runtime: Node.js ≥ 18, CommonJS
 - Produto instalável: `.opencode/` (agents, commands, skills, plugins) + `opencode.json`
 
@@ -19,17 +19,18 @@ cada um em variante leve e pesada.
 ## Instalação
 
 ```bash
-# instalar o pacote
-npm install -g @fx-studio-ai/pipeline-orchestrator-opencode
+# clonar o repositório
+git clone https://github.com/fernandoxavier02/pipeline-orchestrator-opencode.git
+cd pipeline-orchestrator-opencode
 
 # instalar globalmente no OpenCode deste computador
-pipeline-orchestrator-opencode-install --global --apply
+node scripts/install.cjs --global --apply
 
 # simular a instalação em um projeto específico (não escreve nada)
-pipeline-orchestrator-opencode-install --target /caminho/do/projeto
+node scripts/install.cjs --target /caminho/do/projeto
 
 # aplicar em um projeto específico
-pipeline-orchestrator-opencode-install --target /caminho/do/projeto --apply
+node scripts/install.cjs --target /caminho/do/projeto --apply
 ```
 
 O comando copia os artefatos do `.opencode/` (agents, skills, plugins, commands) e o
@@ -57,7 +58,7 @@ Depois da instalação global, abra qualquer projeto no OpenCode e use um destes
 ## Verificação
 
 ```bash
-npm test
+node scripts/run-tests.cjs
 ```
 
 ## Estrutura
